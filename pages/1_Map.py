@@ -6,7 +6,7 @@ import json
 import numpy as np
 import pandas as pd
 import plotly.express as px
-import plotly.figure_factory as ff
+from urllib.request import urlopen
 
 st.set_page_config(
     page_title="Map",
@@ -44,18 +44,49 @@ for i in range(len(values)):
 endpts = list(np.linspace(0, max(values), len(colorscale) - 1))
 
 # strcture figure
-fig = ff.create_choropleth(
-    fips=fips, values=values, scope=["WV"],
-    binning_endpoints=endpts, colorscale=colorscale,
-    show_state_data=False,
-    show_hover=True,
-    simplify_county=0,
-    asp = 2.5,
-    title_text = 'West Virginia Population',
-    legend_title = 'Population'
-)
-fig.layout.template = None
-fig.update_layout(showlegend=False)
+
+df['County'] = df['County'].str.replace(' County', '', case=False)
+merged_df = df.merge(fipsDF, on='County', how='inner')
+
+# Load US counties information
+with urlopen('https://raw.githubusercontent.com/plotly/datasets/master/geojson-counties-fips.json') as response:
+    counties = json.load(response)
+    
+# strcture figure
+fig = px.choropleth_mapbox(merged_df, 
+                           geojson=counties, 
+                           locations='FIPS', 
+                           color='2017',
+                           color_continuous_scale="Viridis",
+                           center = {"lat": 37.0902, "lon": -95.7129}, zoom = 2.5,
+                           opacity=0.75,
+                           mapbox_style="carto-positron")
+
+
+# fig = ff.create_choropleth(
+#     fips=fips, values=values, scope=["WV"],
+#     binning_endpoints=endpts, colorscale=colorscale,
+#     show_state_data=False,
+#     show_hover=True,
+#     simplify_county=0,
+#     asp = 2.5,
+#     title_text = 'West Virginia Population',
+#     legend_title = 'Population'
+# )
+# fig.layout.template = None
+# fig.update_layout(showlegend=False)
 
 st.plotly_chart(fig)
 ###
+
+# Load US counties information
+# with urlopen('https://raw.githubusercontent.com/plotly/datasets/master/geojson-counties-fips.json') as response:
+#     counties = json.load(response)
+
+
+
+# fig.update_layout(title='Biomass Residue Generation by County', 
+#                   coloraxis_colorbar_title_text='Biomass (M tonnes/yr)'
+# )
+
+# fig.show()
