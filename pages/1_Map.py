@@ -46,6 +46,7 @@ endpts = list(np.linspace(0, max(values), len(colorscale) - 1))
 # strcture figure
 
 df['County'] = df['County'].str.replace(' County', '', case=False)
+df['2017'] = df['2017'].str.replace(',', '', case=False).astype('float')
 merged_df = df.merge(fipsDF, on='County', how='inner')
 
 # Load US counties information
