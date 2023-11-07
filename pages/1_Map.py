@@ -47,7 +47,7 @@ fileDict = {
     'Life Expectancy':      "data/WV Drug Epidemic Dataset.xlsx - Life Expectancy.csv",
     'Population':           "data/WV Drug Epidemic Dataset.xlsx - Population.csv",
     'Poverty Rates':        "data/WV Drug Epidemic Dataset.xlsx - Poverty Rates (Percent).csv",
-    'Unemployemnt Rates':   "data/WV Drug Epidemic Dataset.xlsx - Unemployment Rates (Percent).csv"
+    'Unemployment Rates':   "data/WV Drug Epidemic Dataset.xlsx - Unemployment Rates (Percent).csv"
 }
 
 # select box for metric
@@ -87,4 +87,4 @@ fig = ff.create_choropleth(
 fig.layout.template = None
 fig.update_layout(showlegend=True)
 
-st.plotly_chart(fig)
+st.plotly_chart(fig, theme="streamlit")
