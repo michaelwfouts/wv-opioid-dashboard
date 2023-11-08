@@ -1,12 +1,10 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-
 import json
-import numpy as np
-import pandas as pd
 import plotly.express as px
 import plotly.figure_factory as ff
+from urllib.request import urlopen
 
 st.set_page_config(
     page_title="Map",
@@ -20,9 +18,9 @@ if st.checkbox('Show WV FIPS'):
     st.subheader('FIPS')
     st.write(df1)
 
-# read geojson file containing WV map with county borders
-f = open('data/WV_County_Boundaries.geojson')
-counties = json.load(f)
+# Load US counties information
+with urlopen('https://raw.githubusercontent.com/plotly/datasets/master/geojson-counties-fips.json') as response:
+    counties = json.load(response)
 
 # fips to map county codes to location
 fipsDF = pd.read_csv('data/WV FIPS.csv')
@@ -63,28 +61,40 @@ df = pd.read_csv(fileDict[metric])
 df = df.iloc[np.arange(len(fips))]
 
 # get year data with slider
-year_to_filter = st.slider('Year', 2005, 2014, 2014)    # 2005 to 2014 for now
-values = df.loc[:, str(year_to_filter)].tolist()
-for i in range(len(values)):
-    values[i] = str(values[i])
-    values[i] = values[i].replace(",", "")
-    values[i] = float(values[i])
-endpts = list(np.linspace(0, max(values), len(colorDict[metric]) - 1))  # thresholds for different colors in choropleth
+year_to_filter = str(st.slider('Year', 2005, 2014, 2014))    # 2005 to 2014 for now
 
-print(len(fips))
-print(len(values))
-# strcture figure
+# Create overall dataframe
+df['County'] = df['County'].str.replace(' County', '', case=False)
+df[year_to_filter] = df[year_to_filter].str.replace(',', '', case=False).astype(float)
+merged_df = df.merge(fipsDF, on='County', how='inner')
+
+# create map figure
+fig = px.choropleth_mapbox(merged_df, 
+                           geojson=counties, 
+                           locations='FIPS', 
+                           color=year_to_filter,
+                           color_continuous_scale=colorDict[metric],
+                           center = {"lat": 38.7214, "lon": -80.6530}, zoom = 5,
+                           opacity=0.75,
+                           mapbox_style="carto-positron")
+'''
+fips = fipsDF['FIPS'].tolist()
+values = df[year_to_filter].tolist()
+endpts = list(np.linspace(1, int(max(values)), len(colorDict[metric]) - 1))
+
 fig = ff.create_choropleth(
-    fips=fips, values=values, scope=["WV"],
+    fips=fips, values=values, scope=['WV'],
     binning_endpoints=endpts, colorscale=colorDict[metric],
     show_state_data=False,
     show_hover=True,
-    simplify_county=0,
-    asp = 2.5,
-    title_text = 'West Virginia Population',
-    legend_title = 'Population'
-)
-fig.layout.template = None
-fig.update_layout(showlegend=True)
+    asp = 2.9
+)'''
+
+#fig.layout.template = None
+#fig.update_layout(showlegend=True)
+
+print("did we get here")
 
 st.plotly_chart(fig, theme="streamlit")
+
+print("here")
