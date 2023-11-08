@@ -3,7 +3,6 @@ import pandas as pd
 import numpy as np
 import json
 import plotly.express as px
-import plotly.figure_factory as ff
 from urllib.request import urlopen
 
 st.set_page_config(
@@ -77,24 +76,5 @@ fig = px.choropleth_mapbox(merged_df,
                            center = {"lat": 38.7214, "lon": -80.6530}, zoom = 5,
                            opacity=0.75,
                            mapbox_style="carto-positron")
-'''
-fips = fipsDF['FIPS'].tolist()
-values = df[year_to_filter].tolist()
-endpts = list(np.linspace(1, int(max(values)), len(colorDict[metric]) - 1))
-
-fig = ff.create_choropleth(
-    fips=fips, values=values, scope=['WV'],
-    binning_endpoints=endpts, colorscale=colorDict[metric],
-    show_state_data=False,
-    show_hover=True,
-    asp = 2.9
-)'''
-
-#fig.layout.template = None
-#fig.update_layout(showlegend=True)
-
-print("did we get here")
 
 st.plotly_chart(fig, theme="streamlit")
-
-print("here")
