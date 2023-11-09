@@ -13,9 +13,9 @@ st.set_page_config(
 # uploaded_file = st.file_uploader('data/WV FIPS.csv')
 df1=pd.read_csv('data/WV FIPS.csv')
 
-if st.checkbox('Show WV FIPS'):
-    st.subheader('FIPS')
-    st.write(df1)
+# if st.checkbox('Show WV FIPS'):
+#     st.subheader('FIPS')
+#     st.write(df1)
 
 # Load US counties information
 with urlopen('https://raw.githubusercontent.com/plotly/datasets/master/geojson-counties-fips.json') as response:
@@ -50,7 +50,7 @@ fileDict = {
 # select box for metric
 metric = st.selectbox(
     'Select metric to explore',
-    ('Drug Arrests', 'Drug Mortality', 'Illicit Drug Use', 'Life Expectancy',
+    ('Drug Arrests', 'Drug Mortality', 'Life Expectancy',
      'Population', 'Poverty Rates', 'Unemployment Rates'),
      index=0
 )
@@ -58,14 +58,21 @@ metric = st.selectbox(
 # load data
 df = pd.read_csv(fileDict[metric])
 df = df.iloc[np.arange(len(fips))]
+popDF = pd.read_csv(fileDict['Population'])
 
 # get year data with slider
 year_to_filter = str(st.slider('Year', 2005, 2014, 2014))    # 2005 to 2014 for now
 
 # Create overall dataframe
 df['County'] = df['County'].str.replace(' County', '', case=False)
+df[year_to_filter] = df[year_to_filter].astype(str)
 df[year_to_filter] = df[year_to_filter].str.replace(',', '', case=False).astype(float)
 merged_df = df.merge(fipsDF, on='County', how='inner')
+
+# # per capita info
+# if metric == 'Drug Arrests':
+#     popDF[year_to_filter] = popDF[year_to_filter].str.replace(',', '', case=False).astype(float)
+#     df[year_to_filter] = df[year_to_filter]/popDF[year_to_filter] * 100000
 
 # create map figure
 fig = px.choropleth_mapbox(merged_df, 
@@ -75,6 +82,7 @@ fig = px.choropleth_mapbox(merged_df,
                            color_continuous_scale=colorDict[metric],
                            center = {"lat": 38.7214, "lon": -80.6530}, zoom = 5,
                            opacity=0.75,
+                           hover_name = df['County'].tolist(),
                            mapbox_style="carto-positron")
 
 st.plotly_chart(fig, theme="streamlit")
