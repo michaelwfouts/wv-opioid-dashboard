@@ -1,41 +1,65 @@
 import streamlit as st
-import pandas as pd
-import numpy as np
 
 st.set_page_config(
     page_title="Home",
     page_icon="👋",
 )
 
-st.title('Uber pickups in NYC')
+import streamlit as st
 
-DATE_COLUMN = 'date/time'
-DATA_URL = ('https://s3-us-west-2.amazonaws.com/'
-            'streamlit-demo-data/uber-raw-data-sep14.csv.gz')
+# Page title and description
+st.title("Exploring the Opioid Epidemic in West Virginia")
+st.write(
+    "Welcome to our data exploration tool for the opioid epidemic in West Virginia. This Streamlit app is part of our CS 560 project, "
+    "which aims to provide insights into the devastating impact of the opioid crisis in this region. By analyzing various metrics and "
+    "data points, we hope to shed light on the complex nature of the epidemic and its consequences on the state's communities."
+)
 
-@st.cache_data
-def load_data(nrows):
-    data = pd.read_csv(DATA_URL, nrows=nrows)
-    lowercase = lambda x: str(x).lower()
-    data.rename(lowercase, axis='columns', inplace=True)
-    data[DATE_COLUMN] = pd.to_datetime(data[DATE_COLUMN])
-    return data
+# Subheading
+st.subheader("Project Objectives:")
+st.markdown(
+    "- **Analyze Key Metrics**: We will examine important metrics such as drug usage, poverty, and treatment access."
+)
+st.markdown(
+    "- **Visualize Data**: Utilize interactive charts and maps to visualize data, making it easier to understand the trends and patterns."
+)
+st.markdown(
+    "- **Raise Awareness**: Our goal is to increase awareness of the opioid epidemic's impact on West Virginia and contribute to ongoing efforts to combat it."
+)
 
-data_load_state = st.text('Loading data...')
-data = load_data(10000)
-data_load_state.text("Done! (using st.cache_data)")
+# Data sources
+st.subheader("Data Sources:")
+st.markdown(
+    "We have collected data from various sources, including government agencies, healthcare providers, and research organizations. "
+    "Our app integrates this data to provide a comprehensive view of the situation. Specific sources can be seen on the individual pages"
+)
 
-if st.checkbox('Show raw data'):
-    st.subheader('Raw data')
-    st.write(data)
+# Get started
+st.subheader("Let's Get Started:")
+st.write(
+    "We invite you to explore the opioid epidemic data in West Virginia. "
+    "Use the menu on the left to begin your journey, and feel free to interact with the visualizations, filters, and tools available. "
+    "If you have any questions or need assistance, please don't hesitate to reach out to our team."
+)
 
-st.subheader('Number of pickups by hour')
-hist_values = np.histogram(data[DATE_COLUMN].dt.hour, bins=24, range=(0,24))[0]
-st.bar_chart(hist_values)
+# Project team and contact
+st.subheader("Project Team:")
+st.write(
+    "This project was developed by the CS 560 team at West Virginia University. "
+    "If you have questions, feedback, or would like to get in touch with us, please contact:"
+)
+st.markdown(
+    "- **Michael Fouts**: mwfouts@mix.wvu.edu"
+)
+st.markdown(
+    "- **Emily Herrick**: emherrick@mix.wvu.edu"
+)
+st.markdown(
+    "- **Kevin Reisch**: krr00021@mix.wvu.edu"
+)
+st.markdown(
+    "- **Sadaf Sarwari**: sas0004@mix.wvu.edu"
+)
 
-# Some number in the range 0-23
-hour_to_filter = st.slider('hour', 0, 23, 17)
-filtered_data = data[data[DATE_COLUMN].dt.hour == hour_to_filter]
-
-st.subheader('Map of all pickups at %s:00' % hour_to_filter)
-st.map(filtered_data)
+# Footer
+st.write("Thank you for using our app. Together, we can better understand and address the opioid epidemic in West Virginia.")
