@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 import numpy as np
+import plotly.graph_objects as go
 
 # Set the page title
 st.set_page_config(
@@ -34,18 +35,36 @@ metric = st.selectbox(
 
 # load data
 df = pd.read_csv(fileDict[metric])
+df_timeline = pd.read_csv('data\WV Drug Epidemic Dataset.xlsx - Timeline.csv')
 
 # load data
 # df = pd.read_csv(fileDict[metric])
 df = df.iloc[np.arange(len(fips))]
 
-sum_row = df.drop(df.columns[0], axis=1).sum(axis=0)
-
-# Convert the sum row to a DataFrame and transpose it to make it a single row
-sum_df = pd.DataFrame(sum_row)
+if metric in ['Drug Arrests', 'Population']:
+    plot_row = df.drop(df.columns[0], axis=1).sum(axis=0)
+    # Convert the sum row to a DataFrame and transpose it to make it a single row
+    plot_df = pd.DataFrame(plot_row)
+else:
+    plot_row = df.drop(df.columns[0], axis=1).mean(axis=0)
+    # Convert the sum row to a DataFrame and transpose it to make it a single row
+    plot_df = pd.DataFrame(plot_row)
 
 # Create a line chart using Plotly Express
-fig = px.line(sum_df, x=sum_df.index, y=0, markers=True, line_shape='linear', title='Population Over Years')
+fig = px.line(plot_df, x=plot_df.index, y=0, markers=True, line_shape='linear', title= metric + ' vs Time')
+fig.update_xaxes(title_text='Year')
+fig.update_yaxes(title_text=metric)
+
+for i, line in enumerate(df_timeline['Year']):
+    x_points = [line] * 10  # Same x-coordinate for all 5 points
+    y_points = np.linspace(plot_df[0].min(), plot_df[0].max(), 10)  # Vary y-coordinate from 0 to max y
+
+    fig.add_trace(go.Scatter(x=x_points, y=y_points,
+                             mode='lines',
+                             line=dict(color='red', width=2, dash='dash'),
+                             hoverinfo='text',
+                             hovertext=df_timeline['Event'][i],
+                             showlegend=False))
 
 # Show the plot
 st.plotly_chart(fig, theme="streamlit")
