@@ -35,7 +35,7 @@ metric = st.selectbox(
 
 # load data
 df = pd.read_csv(fileDict[metric])
-df_timeline = pd.read_csv('data\WV Drug Epidemic Dataset.xlsx - Timeline.csv')
+df_timeline = pd.read_csv('data/WV Drug Epidemic Dataset.xlsx - Timeline.csv')
 
 # load data
 # df = pd.read_csv(fileDict[metric])
