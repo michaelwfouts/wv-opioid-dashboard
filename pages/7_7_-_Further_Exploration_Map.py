@@ -6,8 +6,8 @@ import plotly.express as px
 from urllib.request import urlopen
 
 st.set_page_config(
-    page_title="Map",
-    page_icon="👋",
+    page_title="Exploration Map",
+    page_icon="🗺️",
 )
 
 # if st.checkbox('Show WV FIPS'):
@@ -66,9 +66,10 @@ metric = st.selectbox(
 df = pd.read_csv(fileDict[metric])
 df = df.iloc[np.arange(len(fips))]
 popDF = pd.read_csv(fileDict['Population'])
+years = df.columns[1:].sort_values(ascending=False).to_numpy()
 
 # get year data with slider
-year_to_filter = str(st.slider('Year', 2005, 2014, 2014))    # 2005 to 2014 for now
+year_to_filter = str(st.slider('Year', 2005, int(years.max()), int(years.max()))) # 2005 to max year
 
 # Create overall dataframe
 df['County'] = df['County'].str.replace(' County', '', case=False)
