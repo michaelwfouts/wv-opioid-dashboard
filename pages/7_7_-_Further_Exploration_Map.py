@@ -44,6 +44,16 @@ fileDict = {
     'Unemployment Rates':   "data/WV Drug Epidemic Dataset.xlsx - Unemployment Rates (Percent).csv"
 }
 
+yearsDict = {
+    'Drug Arrests':         ["1985", "2014"],
+    'Drug Mortality':       ["1980", "2021"],
+    'Illicit Drug Use':     ["2002", "2014"],
+    'Life Expectancy':      ["1980", "2022"],
+    'Population':           ["1970", "2022"],
+    'Poverty Rates':        "data/WV Drug Epidemic Dataset.xlsx - Poverty Rates (Percent).csv",
+    'Unemployment Rates':   "data/WV Drug Epidemic Dataset.xlsx - Unemployment Rates (Percent).csv"
+}
+
 # select box for metric
 metric = st.selectbox(
     'Select metric to explore',
@@ -66,10 +76,11 @@ df[year_to_filter] = df[year_to_filter].astype(str)
 df[year_to_filter] = df[year_to_filter].str.replace(',', '', case=False).astype(float)
 merged_df = df.merge(fipsDF, on='County', how='inner')
 
-# # per capita info
-# if metric == 'Drug Arrests':
-#     popDF[year_to_filter] = popDF[year_to_filter].str.replace(',', '', case=False).astype(float)
-#     df[year_to_filter] = df[year_to_filter]/popDF[year_to_filter] * 100000
+# per capita info
+if metric == 'Drug Arrests':
+    popDF = popDF.astype(str)
+    popDF[year_to_filter] = popDF[year_to_filter].str.replace(',', '', case=False).astype(float)
+    merged_df[year_to_filter] = df[year_to_filter]/popDF[year_to_filter] * 100000
 
 # create map figure
 fig = px.choropleth_mapbox(merged_df, 
@@ -80,6 +91,7 @@ fig = px.choropleth_mapbox(merged_df,
                            center = {"lat": 38.7214, "lon": -80.6530}, zoom = 5,
                            opacity=0.75,
                            hover_name = df['County'].tolist(),
+                           labels={year_to_filter: metric},
                            mapbox_style="carto-positron")
 
 st.plotly_chart(fig, theme="streamlit")
