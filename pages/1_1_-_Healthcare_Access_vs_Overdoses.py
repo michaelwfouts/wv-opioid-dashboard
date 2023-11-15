@@ -7,11 +7,6 @@ st.set_page_config(
     layout="centered",
 )
 
-# Define the content of the page
+# Page Content
 st.write("# Page Under Construction")
-st.write("This page is currently under construction.")
-
-# Checklist
-st.write("# Working Checklist")
-st.write("✅ Data Collection")
-st.write("🚧 Visualization Construction")
+st.write("This page is currently under construction.  Please check back later for updates")

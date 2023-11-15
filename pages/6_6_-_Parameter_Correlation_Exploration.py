@@ -6,8 +6,8 @@ from scipy.stats import pearsonr
 
 # Set the page title
 st.set_page_config(
-    page_title="Under Construction",
-    page_icon="🚧",
+    page_title="Correlation Exploration",
+    page_icon="📊",
     layout="centered",
 )
 

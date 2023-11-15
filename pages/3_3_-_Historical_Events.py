@@ -6,8 +6,8 @@ import plotly.graph_objects as go
 
 # Set the page title
 st.set_page_config(
-    page_title="Under Construction",
-    page_icon="🚧",
+    page_title="Historical Events",
+    page_icon="📖",
     layout="centered",
 )
 
