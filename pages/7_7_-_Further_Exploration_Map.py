@@ -10,9 +10,6 @@ st.set_page_config(
     page_icon="👋",
 )
 
-# uploaded_file = st.file_uploader('data/WV FIPS.csv')
-df1=pd.read_csv('data/WV FIPS.csv')
-
 # if st.checkbox('Show WV FIPS'):
 #     st.subheader('FIPS')
 #     st.write(df1)
