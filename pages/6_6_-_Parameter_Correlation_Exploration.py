@@ -50,9 +50,12 @@ df = df.iloc[np.arange(len(fips))]
 pearson_metric = []
 pearson_value = []
 for value in fileDict:
-    df_test = pd.read_csv(fileDict[value])
+    df_test = pd.read_csv(fileDict[value]).iloc[np.arange(len(fips))]
     if year_to_filter in df_test:
-        r, p_value = pearsonr(df[year_to_filter], df_test[year_to_filter].iloc[np.arange(len(fips))])
+        missing_filter = df[year_to_filter].isnull()
+        missing_filter_test = df_test[year_to_filter].isnull()
+        index_filter = np.invert(missing_filter + missing_filter_test)
+        r, p_value = pearsonr(df[year_to_filter][index_filter], df_test[year_to_filter][index_filter])
         pearson_metric.append(value)
         pearson_value.append(r)
 
@@ -68,6 +71,9 @@ fig = px.bar(
     y='Values',
     title=metric
 )
+
+fig.update_xaxes(title_text='')
+fig.update_yaxes(title_text='Pearson Correlation')
 
 # Customize the chart
 fig.update_layout(xaxis=dict(tickangle=-45))

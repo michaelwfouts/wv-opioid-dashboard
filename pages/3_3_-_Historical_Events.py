@@ -63,8 +63,13 @@ for i, line in enumerate(df_timeline['Year']):
                              mode='lines',
                              line=dict(color='red', width=2, dash='dash'),
                              hoverinfo='text',
-                             hovertext=df_timeline['Event'][i],
+                             hovertext='Year: ' + str(df_timeline['Year'][i]) + '<br>Event: ' + df_timeline['Event'][i],
                              showlegend=False))
 
+fig.update_layout(
+    hoverlabel=dict(
+        align="left"
+    )
+)
 # Show the plot
 st.plotly_chart(fig, theme="streamlit")

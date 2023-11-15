@@ -31,7 +31,7 @@ st.markdown(
 st.subheader("Data Sources:")
 st.markdown(
     "We have collected data from various sources, including government agencies, healthcare providers, and research organizations. "
-    "Our app integrates this data to provide a comprehensive view of the situation. Specific sources can be seen on the individual pages"
+    "Our app integrates this data to provide a comprehensive view of the situation. Specific sources will be referenced in the final version of the app"
 )
 
 # Get started
