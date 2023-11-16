@@ -54,6 +54,7 @@ else:
 fig = px.line(plot_df, x=plot_df.index, y=0, markers=True, line_shape='linear', title= metric + ' vs Time')
 fig.update_xaxes(title_text='Year')
 fig.update_yaxes(title_text=metric)
+fig.update_traces(hovertemplate='Year: %{x} <br>' + metric +': %{y}')
 
 for i, line in enumerate(df_timeline['Year']):
     x_points = [line] * 10  # Same x-coordinate for all 5 points
