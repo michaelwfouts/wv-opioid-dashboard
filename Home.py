@@ -30,15 +30,15 @@ st.markdown(
 # Data sources
 st.subheader("Data Sources:")
 st.markdown(
-    "We have collected data from various sources, including government agencies, healthcare providers, and research organizations. "
-    "Our app integrates this data to provide a comprehensive view of the situation. Specific sources will be referenced in the final version of the app"
+    "We have collected data from various sources, including government agencies, healthcare providers, and research organizations."
+    "Our app integrates this data to provide a comprehensive view of the situation. Specific sources will be referenced in the final version of the app."
 )
 
 # Get started
 st.subheader("Let's Get Started:")
 st.write(
-    "We invite you to explore the opioid epidemic data in West Virginia. "
-    "Use the menu on the left to begin your journey, and feel free to interact with the visualizations, filters, and tools available. "
+    "We invite you to explore the opioid epidemic data in West Virginia."
+    "Use the menu on the left to begin your journey, and feel free to interact with the visualizations, filters, and tools available."
     "If you have any questions or need assistance, please don't hesitate to reach out to our team."
 )
 
