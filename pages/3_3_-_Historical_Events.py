@@ -11,9 +11,15 @@ st.set_page_config(
     layout="centered",
 )
 
-# fips to map county codes to location
-fipsDF = pd.read_csv('data/WV FIPS.csv')
-fips = fipsDF.loc[:, 'FIPS'].tolist()
+# Load data
+@st.cache_data  # Cache ability for faster app 
+def load_fips(path):
+    # Return list of FIPS numbers for 55 counties
+    fipsDF = pd.read_csv(path)
+    fips = fipsDF.loc[:, 'FIPS'].tolist()
+    return fips
+
+fips = load_fips('data/WV FIPS.csv')
 
 # maps metric name to a file name
 fileDict = {
@@ -26,6 +32,11 @@ fileDict = {
     'Unemployment Rates':   "data/WV Drug Epidemic Dataset.xlsx - Unemployment Rates (Percent).csv"
 }
 
+# Visualization Explaination
+st.write("# Historical Events Visualization")
+st.write("This visualization takes an event perspective to the opioid epidemic, events related to the crisis from 1995 to current day.  Event information was taken from several sources and can be filtered by source. Metrics of consideration are aggregated over the 55 counties for the entire state of WV.")
+st.markdown("""---""")
+
 metric = st.selectbox(
     'Select metric to explore',
     ('Drug Arrests', 'Drug Mortality', 'Illicit Drug Use', 'Life Expectancy',
@@ -35,12 +46,20 @@ metric = st.selectbox(
 
 # load data
 df = pd.read_csv(fileDict[metric])
-df_timeline = pd.read_csv('data/WV Drug Epidemic Dataset.xlsx - Timeline.csv')
-
-# load data
-# df = pd.read_csv(fileDict[metric])
 df = df.iloc[np.arange(len(fips))]
 
+df_timeline = pd.read_csv('data/WV Drug Epidemic Dataset.xlsx - Timeline.csv')
+
+source_filter = st.multiselect(
+    'Select the Sources You Would Like',
+    df_timeline['Source (Short)'].unique().tolist())
+
+if source_filter: # if source_filter is not blank
+    df_timeline = df_timeline[df_timeline['Source (Short)'].isin(source_filter)]
+    df_timeline = df_timeline.reset_index()
+
+# Drug Arrests and Population are totals and need to be summed.  The other metrics are
+# per capita/percentages and averaging makes the most sense.
 if metric in ['Drug Arrests', 'Population']:
     plot_row = df.drop(df.columns[0], axis=1).sum(axis=0)
     # Convert the sum row to a DataFrame and transpose it to make it a single row
@@ -64,7 +83,7 @@ for i, line in enumerate(df_timeline['Year']):
                              mode='lines',
                              line=dict(color='red', width=2, dash='dash'),
                              hoverinfo='text',
-                             hovertext='Year: ' + str(df_timeline['Year'][i]) + '<br>Event: ' + df_timeline['Event'][i],
+                             hovertext='Year: ' + str(df_timeline['Year'][i]) + '<br>Source: ' + df_timeline['Source (Short)'][i] + '<br>Event: ' + df_timeline['Event'][i],
                              showlegend=False))
 
 fig.update_layout(
