@@ -21,9 +21,6 @@ def load_fips(path):
     return fips
 
 fips = load_fips('data/WV FIPS.csv')
-# fips to map county codes to location
-# fipsDF = pd.read_csv('data/WV FIPS.csv')
-# fips = fipsDF.loc[:, 'FIPS'].tolist()
 
 # maps metric name to a file name
 fileDict = {
