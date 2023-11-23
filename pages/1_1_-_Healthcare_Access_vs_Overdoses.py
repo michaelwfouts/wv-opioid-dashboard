@@ -16,8 +16,8 @@ st.write("# Healthcare Access vs. Overdoses Visualization")
 st.markdown("""---""")
 
 # load data
-df_physician_person_ratio = pd.read_csv('/users/arif/Desktop/wv-opioid-dashboard/data/WV Drug Epidemic Dataset.xlsx - Physicians Ratio (people_1 primary care physican).csv')
-df_overdose = pd.read_csv('/users/arif/Desktop/wv-opioid-dashboard/data/WV Drug Epidemic Dataset.xlsx - Drug Mortality (Per 100,000).csv')
+df_physician_person_ratio = pd.read_csv('data/WV Drug Epidemic Dataset.xlsx - Physicians Ratio (people_1 primary care physican).csv')
+df_overdose = pd.read_csv('data/WV Drug Epidemic Dataset.xlsx - Drug Mortality (Per 100,000).csv')
 df_visual = pd.DataFrame()
 
 counties = df_physician_person_ratio.County
@@ -68,18 +68,16 @@ df_visual['access'] = df_physician_person_ratio
 df_visual['overdoses'] = df_overdose
 nums = []
 for entry in df_physician_person_ratio:
-    if (entry.isnumeric()):
-        num = 1 / int(entry.replace(',', ''))
-    else:
-        num = 0
+    num = 1 / int(entry.replace(',', ''))
     nums.append(num)
 np_nums = np.array(nums)
 np_cutoff = np.full(len(np_nums), cutoff, dtype=float)
+df_visual['color'] = np.where(np_nums < np_cutoff, 'green', 'red')
 print(df_visual)
-fig = px.scatter(df_visual, df_physician_person_ratio)
-fig.update_traces(hovertemplate=counties[df_physician_person_ratio.index] + '<br>' + df_physician_person_ratio + ' people per physician')
-fig.update_xaxes(title_text='Physician Ratio (Number of people per physician)')
-fig.update_yaxes(title_text='Drug Mortality Per 100,000')
+fig = px.scatter(df_visual, df_physician_person_ratio, df_overdose)
+fig.update_traces(hovertemplate=counties[df_physician_person_ratio.index] + '<br>%{x} people per physician<br>%{y} overdoses per 100,000 people')
+fig.update_xaxes(title_text='Healthcare Access')
+fig.update_yaxes(title_text='Overdoses')
 fig.update_layout(
     hoverlabel=dict(
         align="left"
