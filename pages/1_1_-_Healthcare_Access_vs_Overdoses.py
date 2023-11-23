@@ -18,6 +18,7 @@ st.markdown("""---""")
 # load data
 df_physician_person_ratio = pd.read_csv('/users/arif/Desktop/wv-opioid-dashboard/data/WV Drug Epidemic Dataset.xlsx - Physicians Ratio (people_1 primary care physican).csv')
 df_overdose = pd.read_csv('/users/arif/Desktop/wv-opioid-dashboard/data/WV Drug Epidemic Dataset.xlsx - Drug Mortality (Per 100,000).csv')
+df_visual = pd.DataFrame()
 
 counties = df_physician_person_ratio.County
 
@@ -26,29 +27,6 @@ counties = df_physician_person_ratio.County
 # https://www.amnhealthcare.com/blog/physician/perm/is-there-an-ideal-physician-to-population-ratio/
 cutoff = 26 / 100000
 
-df_physician_person_ratio_2013 = df_physician_person_ratio["2013"].head(55)
-df_physician_person_ratio_2014 = df_physician_person_ratio["2014"].head(55)
-df_physician_person_ratio_2015 = df_physician_person_ratio["2015"].head(55)
-df_physician_person_ratio_2016 = df_physician_person_ratio["2016"].head(55)
-df_physician_person_ratio_2017 = df_physician_person_ratio["2017"].head(55)
-df_physician_person_ratio_2018 = df_physician_person_ratio["2018"].head(55)
-df_physician_person_ratio_2019 = df_physician_person_ratio["2019"].head(55)
-df_physician_person_ratio_2020 = df_physician_person_ratio["2020"].head(55)
-df_physician_person_ratio_2021 = df_physician_person_ratio["2021"].head(55)
-df_physician_person_ratio_2022 = df_physician_person_ratio["2022"].head(55)
-
-
-df_overdose_2013 = df_overdose["2013"].head(55)
-df_overdose_2014 = df_overdose["2014"].head(55)
-df_overdose_2015 = df_overdose["2015"].head(55)
-df_overdose_2016 = df_overdose["2016"].head(55)
-df_overdose_2017 = df_overdose["2017"].head(55)
-df_overdose_2018 = df_overdose["2018"].head(55)
-df_overdose_2019 = df_overdose["2019"].head(55)
-df_overdose_2020 = df_overdose["2020"].head(55)
-df_overdose_2021 = df_overdose["2021"].head(55)
-df_overdose_2022 = df_overdose["2022"].head(55)
-
 # Use Slider to Select Year
 year_to_filter = st.selectbox(
     'Select Year:',
@@ -56,41 +34,50 @@ year_to_filter = st.selectbox(
 )
 
 if year_to_filter == "2013":
-    fig = px.scatter(df_physician_person_ratio_2013, df_overdose_2013)
-    fig.update_traces(hovertemplate=counties[df_physician_person_ratio_2013.index])
-    nums = []
-    for entry in df_physician_person_ratio_2013:
-        num = 1 / int(entry.replace(',', ''))
-        nums.append(num)
-    fig.update_traces(marker=(dict(color=(np.array(nums) < cutoff).astype('int'), colorscale=[[0, 'green'], [1, 'red']])))
+    df_physician_person_ratio = df_physician_person_ratio["2013"].head(55)
+    df_overdose = df_overdose["2013"].head(55)
 elif year_to_filter == "2014":
-    fig = px.scatter(df_physician_person_ratio_2014, df_overdose_2014)
-    fig.update_traces(hovertemplate=counties[df_physician_person_ratio_2014.index])
+    df_physician_person_ratio = df_physician_person_ratio["2014"].head(55)
+    df_overdose = df_overdose["2014"].head(55)
 elif year_to_filter == "2015":
-    fig = px.scatter(df_physician_person_ratio_2015, df_overdose_2015)
-    fig.update_traces(hovertemplate=counties[df_physician_person_ratio_2015.index])
+    df_physician_person_ratio = df_physician_person_ratio["2015"].head(55)
+    df_overdose = df_overdose["2015"].head(55)
 elif year_to_filter == "2016":
-    fig = px.scatter(df_physician_person_ratio_2016, df_overdose_2016)
-    fig.update_traces(hovertemplate=counties[df_physician_person_ratio_2016.index])
+    df_physician_person_ratio = df_physician_person_ratio["2016"].head(55)
+    df_overdose = df_overdose["2016"].head(55)
 elif year_to_filter == "2017":
-    fig = px.scatter(df_physician_person_ratio_2017, df_overdose_2017)
-    fig.update_traces(hovertemplate=counties[df_physician_person_ratio_2017.index])
+    df_physician_person_ratio = df_physician_person_ratio["2017"].head(55)
+    df_overdose = df_overdose["2017"].head(55)
 elif year_to_filter == "2018":
-    fig = px.scatter(df_physician_person_ratio_2018, df_overdose_2018)
-    fig.update_traces(hovertemplate=counties[df_physician_person_ratio_2018.index])
+    df_physician_person_ratio = df_physician_person_ratio["2018"].head(55)
+    df_overdose = df_overdose["2018"].head(55)
 elif year_to_filter == "2019":
-    fig = px.scatter(df_physician_person_ratio_2019, df_overdose_2019)
-    fig.update_traces(hovertemplate=counties[df_physician_person_ratio_2019.index])
+    df_physician_person_ratio = df_physician_person_ratio["2019"].head(55)
+    df_overdose = df_overdose["2019"].head(55)
 elif year_to_filter == "2020":
-    fig = px.scatter(df_physician_person_ratio_2020, df_overdose_2020)
-    fig.update_traces(hovertemplate=counties[df_physician_person_ratio_2020.index])
+    df_physician_person_ratio = df_physician_person_ratio["2020"].head(55)
+    df_overdose = df_overdose["2020"].head(55)
 elif year_to_filter == "2021":
-    fig = px.scatter(df_physician_person_ratio_2021, df_overdose_2021)
-    fig.update_traces(hovertemplate=counties[df_physician_person_ratio_2021.index])
+    df_physician_person_ratio = df_physician_person_ratio["2021"].head(55)
+    df_overdose = df_overdose["2021"].head(55)
 else:
-    fig = px.scatter(df_physician_person_ratio_2022, df_overdose_2022)
-    fig.update_traces(hovertemplate=counties[df_physician_person_ratio_2022.index])
+    df_physician_person_ratio = df_physician_person_ratio["2022"].head(55)
+    df_overdose = df_overdose["2022"].head(55)
 
+df_visual['access'] = df_physician_person_ratio
+df_visual['overdoses'] = df_overdose
+nums = []
+for entry in df_physician_person_ratio:
+    if (entry.isnumeric()):
+        num = 1 / int(entry.replace(',', ''))
+    else:
+        num = 0
+    nums.append(num)
+np_nums = np.array(nums)
+np_cutoff = np.full(len(np_nums), cutoff, dtype=float)
+print(df_visual)
+fig = px.scatter(df_visual, df_physician_person_ratio)
+fig.update_traces(hovertemplate=counties[df_physician_person_ratio.index] + '<br>' + df_physician_person_ratio + ' people per physician')
 fig.update_xaxes(title_text='Physician Ratio (Number of people per physician)')
 fig.update_yaxes(title_text='Drug Mortality Per 100,000')
 fig.update_layout(
@@ -98,8 +85,4 @@ fig.update_layout(
         align="left"
     )
 )
-
-# TODO:
-# maybe color dots red if they are considered low physician ratio? check what this number is 
-
 st.plotly_chart(fig, theme="streamlit")
