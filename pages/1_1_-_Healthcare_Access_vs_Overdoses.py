@@ -16,10 +16,15 @@ st.write("# Healthcare Access vs. Overdoses Visualization")
 st.markdown("""---""")
 
 # load data
-df_physician_person_ratio = pd.read_csv('data/WV Drug Epidemic Dataset.xlsx - Physicians Ratio (people_1 primary care physican).csv')
-df_overdose = pd.read_csv('data/WV Drug Epidemic Dataset.xlsx - Drug Mortality (Per 100,000).csv')
+df_physician_person_ratio = pd.read_csv('/users/arif/Desktop/wv-opioid-dashboard/data/WV Drug Epidemic Dataset.xlsx - Physicians Ratio (people_1 primary care physican).csv')
+df_overdose = pd.read_csv('/users/arif/Desktop/wv-opioid-dashboard/data/WV Drug Epidemic Dataset.xlsx - Drug Mortality (Per 100,000).csv')
 
 counties = df_physician_person_ratio.County
+
+# average physician to person ratio:
+# about 26 per 100,000 people
+# https://www.amnhealthcare.com/blog/physician/perm/is-there-an-ideal-physician-to-population-ratio/
+cutoff = 26 / 100000
 
 df_physician_person_ratio_2013 = df_physician_person_ratio["2013"].head(55)
 df_physician_person_ratio_2014 = df_physician_person_ratio["2014"].head(55)
@@ -53,6 +58,11 @@ year_to_filter = st.selectbox(
 if year_to_filter == "2013":
     fig = px.scatter(df_physician_person_ratio_2013, df_overdose_2013)
     fig.update_traces(hovertemplate=counties[df_physician_person_ratio_2013.index])
+    nums = []
+    for entry in df_physician_person_ratio_2013:
+        num = 1 / int(entry.replace(',', ''))
+        nums.append(num)
+    fig.update_traces(marker=(dict(color=(np.array(nums) < cutoff).astype('int'), colorscale=[[0, 'green'], [1, 'red']])))
 elif year_to_filter == "2014":
     fig = px.scatter(df_physician_person_ratio_2014, df_overdose_2014)
     fig.update_traces(hovertemplate=counties[df_physician_person_ratio_2014.index])
@@ -81,7 +91,7 @@ else:
     fig = px.scatter(df_physician_person_ratio_2022, df_overdose_2022)
     fig.update_traces(hovertemplate=counties[df_physician_person_ratio_2022.index])
 
-fig.update_xaxes(title_text='Physician to Person Ratio')
+fig.update_xaxes(title_text='Physician Ratio (Number of people per physician)')
 fig.update_yaxes(title_text='Drug Mortality Per 100,000')
 fig.update_layout(
     hoverlabel=dict(
