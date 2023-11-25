@@ -3,6 +3,7 @@ import pandas as pd
 import plotly.express as px
 import numpy as np
 import plotly.graph_objects as go
+import math
 
 # Set the page title
 st.set_page_config(
@@ -16,8 +17,8 @@ st.write("# Healthcare Access vs. Overdoses Visualization")
 st.markdown("""---""")
 
 # load data
-df_physician_person_ratio = pd.read_csv('data/WV Drug Epidemic Dataset.xlsx - Physicians Ratio (people_1 primary care physican).csv')
-df_overdose = pd.read_csv('data/WV Drug Epidemic Dataset.xlsx - Drug Mortality (Per 100,000).csv')
+df_physician_person_ratio = pd.read_csv('/Users/arif/Desktop/wv-opioid-dashboard/data/WV Drug Epidemic Dataset.xlsx - Physicians Ratio (people_1 primary care physican).csv')
+df_overdose = pd.read_csv('/Users/arif/Desktop/wv-opioid-dashboard/data/WV Drug Epidemic Dataset.xlsx - Drug Mortality (Per 100,000).csv')
 df_visual = pd.DataFrame()
 
 counties = df_physician_person_ratio.County
@@ -65,14 +66,19 @@ else:
     df_overdose = df_overdose["2022"].head(55)
 
 df_visual['access'] = df_physician_person_ratio
+df_visual['access'].fillna(0, inplace=True)
 df_visual['overdoses'] = df_overdose
 nums = []
 for entry in df_physician_person_ratio:
-    num = 1 / int(str(entry).replace(',', ''))
+    entry_no_commas = int(str(entry).replace(',', ''))
+    if entry_no_commas == 0:
+        num = 0
+    else:
+        num = 1 / entry_no_commas
     nums.append(num)
 np_nums = np.array(nums)
 np_cutoff = np.full(len(np_nums), cutoff, dtype=float)
-df_visual['color'] = np.where(np_nums < np_cutoff, 'green', 'red')
+df_visual['color'] = np.where(np_nums < np_cutoff, 'red', 'green')
 fig = px.scatter(df_visual, df_physician_person_ratio, df_overdose)
 fig.update_traces(hovertemplate=counties[df_physician_person_ratio.index] + '<br>%{x} people per physician<br>%{y} overdoses per 100,000 people')
 fig.update_traces(marker=dict(color=df_visual['color']))
