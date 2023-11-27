@@ -10,6 +10,12 @@ st.set_page_config(
     page_icon="🗺️",
 )
 
+# Visualization explanation
+st.write("# Further Exploration Map")
+st.markdown("""---""")
+st.write("This visualization serves as a platform to explore each of the metrics in relation to the opioid epidemic. The goal is to allow you to take this research into your own hands by trying to answer questions the previous visualizations may have raised that you would like answered.")
+st.markdown("""---""")
+
 # if st.checkbox('Show WV FIPS'):
 #     st.subheader('FIPS')
 #     st.write(df1)
