@@ -12,28 +12,33 @@ st.set_page_config(
     layout="centered",
 )
 
-# Visualization Explaination
+# Visualization explanation
 st.write("# Healthcare Access vs. Overdoses Visualization")
 st.markdown("""---""")
+st.write("This visualization explores the relationship between healthcare access--measured by the person-to-physician ratio per county--and overdoses per 100,000 people. Hovering over each dot reveals the county name and the exact numbers for the two parameters described. Dots in red are counties that have a person-to-physician ratio below what is considered viable for a region's populace.")
+st.markdown("""---""")
 
-# load data
+# Load data
 df_physician_person_ratio = pd.read_csv('data/WV Drug Epidemic Dataset.xlsx - Physicians Ratio (people_1 primary care physican).csv')
 df_overdose = pd.read_csv('data/WV Drug Epidemic Dataset.xlsx - Drug Mortality (Per 100,000).csv')
 df_visual = pd.DataFrame()
 
+# Get county names (will use in hover info)
 counties = df_physician_person_ratio.County
 
-# average physician to person ratio:
+# Average physician to person ratio:
 # about 26 per 100,000 people
 # https://www.amnhealthcare.com/blog/physician/perm/is-there-an-ideal-physician-to-population-ratio/
 cutoff = 26 / 100000
 
-# Use Slider to Select Year
+# Use slider to select year
 year_to_filter = st.selectbox(
     'Select Year:',
     ["2013", "2014", "2015", "2016", "2017", "2018", "2019", "2020", "2021", "2022"]
 )
 
+# Get pertinent info depending on selected year
+# NOTE: removing Clay County due to missing data for years 2015 - 2018
 if year_to_filter == "2013":
     df_physician_person_ratio = df_physician_person_ratio["2013"].head(55)
     df_overdose = df_overdose["2013"].head(55)
@@ -43,15 +48,23 @@ elif year_to_filter == "2014":
 elif year_to_filter == "2015":
     df_physician_person_ratio = df_physician_person_ratio["2015"].head(55)
     df_overdose = df_overdose["2015"].head(55)
+    df_physician_person_ratio.drop(df_physician_person_ratio.index[7], inplace=True)
+    df_overdose.drop(df_overdose.index[7], inplace=True)
 elif year_to_filter == "2016":
     df_physician_person_ratio = df_physician_person_ratio["2016"].head(55)
     df_overdose = df_overdose["2016"].head(55)
+    df_physician_person_ratio.drop(df_physician_person_ratio.index[7], inplace=True)
+    df_overdose.drop(df_overdose.index[7], inplace=True)
 elif year_to_filter == "2017":
     df_physician_person_ratio = df_physician_person_ratio["2017"].head(55)
     df_overdose = df_overdose["2017"].head(55)
+    df_physician_person_ratio.drop(df_physician_person_ratio.index[7], inplace=True)
+    df_overdose.drop(df_overdose.index[7], inplace=True)
 elif year_to_filter == "2018":
     df_physician_person_ratio = df_physician_person_ratio["2018"].head(55)
     df_overdose = df_overdose["2018"].head(55)
+    df_physician_person_ratio.drop(df_physician_person_ratio.index[7], inplace=True)
+    df_overdose.drop(df_overdose.index[7], inplace=True)
 elif year_to_filter == "2019":
     df_physician_person_ratio = df_physician_person_ratio["2019"].head(55)
     df_overdose = df_overdose["2019"].head(55)
@@ -65,20 +78,21 @@ else:
     df_physician_person_ratio = df_physician_person_ratio["2022"].head(55)
     df_overdose = df_overdose["2022"].head(55)
 
+# Set up visualization data frame
 df_visual['access'] = df_physician_person_ratio
-df_visual['access'].fillna(0, inplace=True)
 df_visual['overdoses'] = df_overdose
+
+# Figure out which entries will be red vs. green based on whether they meet the cutoff 
 nums = []
-for entry in df_physician_person_ratio:
+for entry in df_visual['access']:
     entry_no_commas = int(str(entry).replace(',', ''))
-    if entry_no_commas == 0:
-        num = 0
-    else:
-        num = 1 / entry_no_commas
+    num = 1 / entry_no_commas
     nums.append(num)
 np_nums = np.array(nums)
 np_cutoff = np.full(len(np_nums), cutoff, dtype=float)
 df_visual['color'] = np.where(np_nums < np_cutoff, 'red', 'green')
+
+# Create the scatter plot
 fig = px.scatter(df_visual, df_physician_person_ratio, df_overdose)
 fig.update_traces(hovertemplate=counties[df_physician_person_ratio.index] + '<br>%{x} people per physician<br>%{y} overdoses per 100,000 people')
 fig.update_traces(marker=dict(color=df_visual['color']))
