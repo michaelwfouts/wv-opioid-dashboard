@@ -17,8 +17,8 @@ st.write("# Healthcare Access vs. Overdoses Visualization")
 st.markdown("""---""")
 
 # load data
-df_physician_person_ratio = pd.read_csv('/Users/arif/Desktop/wv-opioid-dashboard/data/WV Drug Epidemic Dataset.xlsx - Physicians Ratio (people_1 primary care physican).csv')
-df_overdose = pd.read_csv('/Users/arif/Desktop/wv-opioid-dashboard/data/WV Drug Epidemic Dataset.xlsx - Drug Mortality (Per 100,000).csv')
+df_physician_person_ratio = pd.read_csv('data/WV Drug Epidemic Dataset.xlsx - Physicians Ratio (people_1 primary care physican).csv')
+df_overdose = pd.read_csv('data/WV Drug Epidemic Dataset.xlsx - Drug Mortality (Per 100,000).csv')
 df_visual = pd.DataFrame()
 
 counties = df_physician_person_ratio.County
