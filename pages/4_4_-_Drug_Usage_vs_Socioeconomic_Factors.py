@@ -150,10 +150,27 @@ fig = px.choropleth_mapbox(
     color_continuous_scale=color_scale,
     center = {"lat": 38.7214, "lon": -80.6530}, zoom = 5,
     opacity=0.75,
-    hover_name = df['County'].tolist(),
-    labels={year_to_filter: metric},
+    # hover_name = final_df['County'].tolist(),
+    # labels={year_to_filter: metric},
     mapbox_style="carto-positron",
-    title='Bivariate Choropleth Map'
+    title='Opiod Dispensing vs. ' + metric,
+    custom_data=['County', 
+                 'Drug Use Cat', 
+                 'Metric Rate Cat', 
+                 year_to_filter + 'Metric',
+                 year_to_filter + 'Drug Use']
 )
+
+fig.update_traces(hovertemplate='County: %{customdata[0]}<br><br>' + 
+                                'Opioid Dispensing: %{customdata[4]:.1f} (%{customdata[1]})<br>' +
+                                 metric + ': %{customdata[3]:.1f} (%{customdata[2]})')
+
+fig.update_layout(
+    hoverlabel=dict(
+        align="left"
+    )
+)
+
+fig.update_layout(legend_title_text='Combined Categorical Metrics')
 
 st.plotly_chart(fig, theme="streamlit")
