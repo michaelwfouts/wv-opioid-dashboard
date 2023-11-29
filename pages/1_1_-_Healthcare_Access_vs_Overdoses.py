@@ -13,9 +13,11 @@ st.set_page_config(
 )
 
 # Visualization explanation
-st.write("# Healthcare Access vs. Overdoses Visualization")
+url = "https://www.amnhealthcare.com/blog/physician/perm/is-there-an-ideal-physician-to-population-ratio/"
+st.write("# Healthcare Access vs. Overdoses")
 st.markdown("""---""")
-st.write("This visualization explores the relationship between healthcare access--measured by the person-to-physician ratio per county--and overdoses per 100,000 people. Hovering over each dot reveals the county name and the exact numbers for the two parameters described. Dots in red are counties that have a person-to-physician ratio below what is considered viable for a region's populace.")
+st.write("This visualization explores the relationship between healthcare access--measured by the person-to-physician ratio per county--and overdoses per 100,000 people. Hovering over each dot reveals the county name and the exact numbers for the two parameters described. Dots in red are counties that have a person-to-physician ratio below what is considered viable for a region's populace.*")
+st.write("*The cutoff person-to-physician ratio was derived by taking the average Family Medicine ratios of the three sources listed on [this AMN Healthcare webpage](%s), updated in 2023.*" %url)
 st.markdown("""---""")
 
 # Load data
