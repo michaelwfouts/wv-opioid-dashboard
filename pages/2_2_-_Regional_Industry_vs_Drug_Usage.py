@@ -48,11 +48,11 @@ industry_to_filter = st.selectbox(
 )
 
 # read in data from the dataset
-df_employ_const_ext = pd.read_csv('/Users/emily/Documents/GitHub/wv-opioid-dashboard/data/WV Drug Epidemic Dataset.xlsx - Employment per 1000 jobs- Construction&Extraction .csv')
-df_employ_farm_fish_forest = pd.read_csv('/Users/emily/Documents/GitHub/wv-opioid-dashboard/data/WV Drug Epidemic Dataset.xlsx - Employment per 1000 jobs - Farm&Fish&Forest.csv')
-df_employ_install_mainten_repair = pd.read_csv('/Users/emily/Documents/GitHub/wv-opioid-dashboard/data/WV Drug Epidemic Dataset.xlsx - Employment per 1000 jobs - Install&Mainten&Repair.csv')
-df_employ_prod = pd.read_csv('/Users/emily/Documents/GitHub/wv-opioid-dashboard/data/WV Drug Epidemic Dataset.xlsx - Employment per 1000 jobs - Production.csv')
-df_drug_usage = pd.read_csv('/Users/emily/Documents/GitHub/wv-opioid-dashboard/data/WV Drug Epidemic Dataset.xlsx - Opioid Dispensing Rate per 100.csv')
+df_employ_const_ext = pd.read_csv('data/WV Drug Epidemic Dataset.xlsx - Employment per 1000 jobs- Construction&Extraction .csv')
+df_employ_farm_fish_forest = pd.read_csv('data/WV Drug Epidemic Dataset.xlsx - Employment per 1000 jobs - Farm&Fish&Forest.csv')
+df_employ_install_mainten_repair = pd.read_csv('data/WV Drug Epidemic Dataset.xlsx - Employment per 1000 jobs - Install&Mainten&Repair.csv')
+df_employ_prod = pd.read_csv('data/WV Drug Epidemic Dataset.xlsx - Employment per 1000 jobs - Production.csv')
+df_drug_usage = pd.read_csv('data/WV Drug Epidemic Dataset.xlsx - Opioid Dispensing Rate per 100.csv')
 
 
 # get pertinent info depending on selected year and industry
@@ -108,7 +108,7 @@ with urlopen('https://raw.githubusercontent.com/plotly/datasets/master/geojson-c
     counties = json.load(response)
 
 # get a list of FIPS codes for WV counties
-df_fips = pd.read_csv('/Users/emily/Documents/GitHub/wv-opioid-dashboard/data/WV FIPS.csv')
+df_fips = pd.read_csv('data/WV FIPS.csv')
 data_fips = df_fips["FIPS"]
 
 # -------------------------------
