@@ -26,14 +26,14 @@ fips = fipsDF.loc[:, 'FIPS'].tolist()
 # load data
 df = pd.read_csv("data/WV Drug Epidemic Dataset.xlsx - Life Expectancy.csv")
 df = df.iloc[np.arange(len(fips))]
-df2 = pd.read_csv("data/WV Drug Epidemic Dataset.xlsx - Drug Mortality (Per 100,000).csv")
+df2 = pd.read_csv("data/WV Drug Epidemic Dataset.xlsx - Opioid Dispensing Rate per 100.csv")
 df2 = df2.iloc[np.arange(len(fips))]
 
 # national average lifespan data
 lifeExptDF = pd.read_csv("data/National Average Lifespan.csv")
 
 # get year data with slider
-year_to_filter = str(st.slider('Year', 2005, 2014, 2013))    # 2005 to 2014 for now
+year_to_filter = str(st.slider('Year', 2006, 2020, 2020))    # 2006 to 2020 for now
 
 # Create overall dataframes
 df['County'] = df['County'].str.replace(' County', '', case=False)
@@ -47,7 +47,7 @@ merged_df = df.merge(fipsDF, on='County', how='inner')
 df2['County'] = df2['County'].str.replace(' County', '', case=False)
 df2[year_to_filter] = df2[year_to_filter].astype(str)
 df2[year_to_filter] = df2[year_to_filter].str.replace(',', '', case=False).astype(float)
-merged_df2 = df2.merge(fipsDF, on='County', how='inner')
+merged_df2 = df2
 
 # apply high/medium/low column to dataframes
 max = merged_df[year_to_filter].max()
