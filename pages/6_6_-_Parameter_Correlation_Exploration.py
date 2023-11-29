@@ -127,7 +127,7 @@ fig = px.bar(
     df_bar,
     x=df_bar.index,
     y='Values',
-    title=metric
+    title=metric,
 )
 
 fig.update_xaxes(title_text='')
@@ -135,6 +135,8 @@ fig.update_yaxes(title_text=plot_title)
 
 # Customize the chart
 fig.update_layout(xaxis=dict(tickangle=-45))
+
+fig.update_traces(hovertemplate='Comparison Metric: %{x}<br>' + plot_title + ': %{y}')
 
 # Plot figure
 st.plotly_chart(fig, theme="streamlit")
