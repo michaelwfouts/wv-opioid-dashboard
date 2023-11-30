@@ -10,7 +10,7 @@ from urllib.request import urlopen
 # Set the page title
 st.set_page_config(
     page_title="Drug Usage vs Life Expectancy",
-    page_icon="🚧",
+    page_icon="⌛",
     layout="centered",
 )
 
