@@ -93,3 +93,6 @@ fig.update_layout(
 )
 # Show the plot
 st.plotly_chart(fig, theme="streamlit")
+
+footer="Sources: West Virginia Board of Medicine, White House, Centers for Disease Control and Prevention (CDC), United States Food and Drug Administration (FDA)"
+st.markdown(footer)

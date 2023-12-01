@@ -105,4 +105,8 @@ fig.update_layout(
         align="left"
     )
 )
+
 st.plotly_chart(fig, theme="streamlit")
+
+footer="Sources: Global Health Data Exchange (GHDx), County Health Rankings and Roadmaps, San Francisco Chronicle, Centers for Disease Control and Prevention (CDC)"
+st.markdown(footer)

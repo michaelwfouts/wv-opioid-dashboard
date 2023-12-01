@@ -221,7 +221,5 @@ fig.update_layout(legend_title_text='Combined Categorical Metrics')
 # add plot to page
 st.plotly_chart(fig, theme="streamlit")
 
-
-
-
-
+footer="Sources: Centers for Disease Control and Prevention (CDC), US Bureau of Labor Statistics, The Washington Post"
+st.markdown(footer)

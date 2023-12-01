@@ -155,3 +155,6 @@ with col2:
 # Define the content of the page
 st.write("# Page Under Construction")
 st.write("This page is currently under construction. Please check back later for updates.")
+
+footer="Sources: Centers for Disease Control and Prevention (CDC), Global Health Data Exchange (GHDx), County Health Rankings and Roadmaps"
+st.markdown(footer)

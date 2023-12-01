@@ -140,3 +140,6 @@ fig.update_traces(hovertemplate='Comparison Metric: %{x}<br>' + plot_title + ': 
 
 # Plot figure
 st.plotly_chart(fig, theme="streamlit")
+
+footer="Sources: Centers for Disease Control and Prevention (CDC), US Bureau of Labor Statistics, United States Census Bureau, US Department of Agriculture (USDA) Economic Research Service, IndexMundi, Inter-university Consortium for Political and Social Research (ICPSR)"
+st.markdown(footer)
