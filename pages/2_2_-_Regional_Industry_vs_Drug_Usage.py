@@ -7,10 +7,13 @@ import math
 from urllib.request import urlopen
 import json
 
+# ----------------------------------------
+# PAGE LEVEL SETTINGS
+
 # Set the page title
 st.set_page_config(
     page_title="Industry vs Drug Usage",
-    page_icon="🚧",
+    page_icon="🛠️",
     layout="centered",
 )
 
@@ -139,54 +142,54 @@ drug_usage_range_low = [min(data_drug_usage), min(data_drug_usage)+interval]
 drug_usage_range_med = [min(data_drug_usage)+interval, min(data_drug_usage)+interval+interval]
 
 # get the range for high drug usage
-drug_usage_range_high = [[min(data_drug_usage)+interval+interval, min(data_drug_usage)+interval+interval+interval]]
+drug_usage_range_high = [min(data_drug_usage)+interval+interval, min(data_drug_usage)+interval+interval+interval]
 
 # -------------------------------
 # get the bivariate category for each county
 
-data_bivariate = np.zeros(55, dtype=int)
+data_bivariate = np.empty(55, dtype="<U100")
 
 # for each county
 for iCounty in range(55):
 
     # if employment is low and drug usage is low
     if (employ_range_low[0] <= data_employ[iCounty] < employ_range_low[1]) and (drug_usage_range_low[0] <= data_drug_usage[iCounty] < drug_usage_range_low[1]):
-        data_bivariate[iCounty] = 11
+        data_bivariate[iCounty] = 'low employment and low opioid dispensing rate'
 
     # if employment is low and drug usage is medium
     elif (employ_range_low[0] <= data_employ[iCounty] < employ_range_low[1]) and (drug_usage_range_med[0] <= data_drug_usage[iCounty] < drug_usage_range_med[1]):
-        data_bivariate[iCounty] = 12
+        data_bivariate[iCounty] = 'low employment and medium opioid dispensing rate'
 
     # if employment is low and drug usage is high
-    #elif (employ_range_low[0] <= data_employ[iCounty] < employ_range_low[1]) and (drug_usage_range_high[0] <= data_drug_usage[iCounty] <= drug_usage_range_high[1]):
-        #data_bivariate[iCounty] = 13
+    elif (employ_range_low[0] <= data_employ[iCounty] < employ_range_low[1]) and (drug_usage_range_high[0] <= data_drug_usage[iCounty] <= drug_usage_range_high[1]):
+        data_bivariate[iCounty] = 'low employment and high opioid dispensing rate'
 
     # if employment is medium and drug usage is low
     elif (employ_range_med[0] <= data_employ[iCounty] < employ_range_med[1]) and (drug_usage_range_low[0] <= data_drug_usage[iCounty] < drug_usage_range_low[1]):
-        data_bivariate[iCounty] = 21
+        data_bivariate[iCounty] = 'medium employment and low opioid dispensing rate'
 
     # if employment is medium and drug usage is medium
     elif (employ_range_med[0] <= data_employ[iCounty] < employ_range_med[1]) and (drug_usage_range_med[0] <= data_drug_usage[iCounty] < drug_usage_range_med[1]):
-        data_bivariate[iCounty] = 22
+        data_bivariate[iCounty] = 'medium employment and medium opioid dispensing rate'
 
     # if employment is medium and drug usage is high
-    #elif (employ_range_med[0] <= data_employ[iCounty] < employ_range_med[1]) and (drug_usage_range_high[0] <= data_drug_usage[iCounty] <= drug_usage_range_high[1]):
-        #data_bivariate[iCounty] = 23
+    elif (employ_range_med[0] <= data_employ[iCounty] < employ_range_med[1]) and (drug_usage_range_high[0] <= data_drug_usage[iCounty] <= drug_usage_range_high[1]):
+        data_bivariate[iCounty] = 'medium employment and high opioid dispensing rate'
 
     # if employment is high and drug usage is low
     elif (employ_range_high[0] <= data_employ[iCounty] <= employ_range_high[1]) and (drug_usage_range_low[0] <= data_drug_usage[iCounty] < drug_usage_range_low[1]):
-        data_bivariate[iCounty] = 31
+        data_bivariate[iCounty] = 'high employment and low opioid dispensing rate'
 
     # if employment is high and drug usage is medium
     elif (employ_range_high[0] <= data_employ[iCounty] <= employ_range_high[1]) and (drug_usage_range_med[0] <= data_drug_usage[iCounty] < drug_usage_range_med[1]):
-        data_bivariate[iCounty] = 32
+        data_bivariate[iCounty] = 'high employment and medium opioid dispensing rate'
 
     # if employment is high and drug usage is high
-    #elif (employ_range_high[0] <= data_employ[iCounty] <= employ_range_high[1]) and (drug_usage_range_high[0] <= data_drug_usage[iCounty] <= drug_usage_range_high[1]):
-        #data_bivariate[iCounty] = 33
+    elif (employ_range_high[0] <= data_employ[iCounty] <= employ_range_high[1]) and (drug_usage_range_high[0] <= data_drug_usage[iCounty] <= drug_usage_range_high[1]):
+        data_bivariate[iCounty] = 'high employment and high opioid dispensing rate'
 
     else:
-        data_bivariate[iCounty] = 44
+        data_bivariate[iCounty] = 'needs fixed'
 
 # -------------------------------
 # plot
@@ -202,13 +205,20 @@ fig = px.choropleth_mapbox(
     geojson=counties,
     locations='fips',
     color='bivariate',
-    color_continuous_scale="Viridis",
     center = {"lat": 38.7214, "lon": -80.6530}, zoom = 5,
     opacity=0.75,
-    mapbox_style="carto-positron",
-    labels={'employment':'Num employed in chosen industry'}
+    mapbox_style="carto-positron"
 )
 
+# format the data shown when hovering over a county
+#fig.update_traces(hovertemplate='County: \n' +
+#                                'Num of Employed: \n' +
+#                                'Opioid Dispensing Rate: ')
+
+# rename the legend title
+fig.update_layout(legend_title_text='Combined Categorical Metrics')
+
+# add plot to page
 st.plotly_chart(fig, theme="streamlit")
 
 
