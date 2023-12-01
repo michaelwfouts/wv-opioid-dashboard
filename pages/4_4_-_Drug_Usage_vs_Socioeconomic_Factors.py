@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 import json
 import plotly.express as px
+import plotly.graph_objects as go
 from urllib.request import urlopen
 
 # Set the page title
@@ -111,12 +112,19 @@ third = value_range / 3
 drug_use_df['Drug Use Cat'] = drug_use_df[year_to_filter].apply(categorize_thirds)
 
 # Define the replacements
-replacement_dict_drug_use = {1: 'Low Opioid Dispensing', 2: 'Med Opioid Dispensing', 3: 'High Opioid Dispensing'}
-replacement_dict_metric = {1: 'Low ' + metric, 2: 'Med ' + metric, 3: 'High ' + metric}
+replacement_dict_drug_use = {1: 'Low Opioid', 2: 'Med Opioid', 3: 'High Opioid'}
+#replacement_dict_metric = {1: 'Low ' + metric, 2: 'Med ' + metric, 3: 'High ' + metric}
+
+replacement_dict_Arrests =      {1: 'Low Arrests', 2: 'Med Arrests', 3: 'High Arrests'}
+replacement_dict_Poverty =      {1: 'Low Poverty', 2: 'Med Poverty', 3: 'High Poverty'}
+replacement_dict_Unemployment = {1: 'Low Unemployment', 2: 'Med Unemployment', 3: 'High Unemployment'}
+replacement_dict_metric = {"Drug Arrests": replacement_dict_Arrests,
+                           "Poverty Rates": replacement_dict_Poverty,
+                           "Unemployment Rates": replacement_dict_Unemployment}
 
 # Replace values in the specified column
 drug_use_df['Drug Use Cat'] = drug_use_df['Drug Use Cat'].replace(replacement_dict_drug_use)
-merged_df['Metric Rate Cat'] = merged_df['Metric Rate Cat'].replace(replacement_dict_metric)
+merged_df['Metric Rate Cat'] = merged_df['Metric Rate Cat'].replace(replacement_dict_metric[metric])
 
 # Combine the two together
 merged_df['Bivariate'] = drug_use_df['Drug Use Cat'].astype(str)+ ', ' + merged_df['Metric Rate Cat'].astype(str) 
@@ -128,17 +136,55 @@ drug_use_df = drug_use_df.rename(columns={year_to_filter: year_to_filter + 'Drug
 final_df = merged_df.merge(drug_use_df, on='County', how='inner')
 final_df = final_df.sort_values(by=[year_to_filter + 'Drug Use', year_to_filter + 'Metric'])
 
-# # Blue (opiod dispensing)    # FFFFFF  8888FF  0000FF
-# # Cyan (metric 1)            # FFFFFF  88FFFF  00FFFF
-# biColor = {'low_low': '#FFFFFF', 'low_medium': '#C3C3FF', 'low_high': '#7F7FFF',
-#            'medium_low': '#C3FFFF', 'medium_medium': '#88C3FF', 'medium_high': '#447FFF',
-#            'high_low': '#7FFFFF', 'high_medium': '#C3447F', 'high_high': '#7F007F'}
+# Red (Drug Arrests)          # FFFFFF  FF8888  FF0000
+# Black (opiod dispensing)    # FFFFFF  888888  000000
+biColorDrugArrests = {'Low Opioid, Low Arrests': '#FFFFFF', 'Low Opioid, Med Arrests': '#FFC3C3', 'Low Opioid, High Arrests': '#FF7F7F',
+                      'Med Opioid, Low Arrests': '#C3C3C3', 'Med Opioid, Med Arrests': '#C38888', 'Med Opioid, High Arrests': '#C34444',
+                      'High Opioid, Low Arrests': '#7F7F7F', 'High Opioid, Med Arrests': '#7F4444', 'High Opioid, High Arrests': '#7F0000'}
+Legend_DrugArrests_Color = [
+    [0.0, '#FFFFFF'], [0.125, '#FFC3C3'], [0.25, '#FF7F7F'],
+    [0.375, '#C3C3C3'], [0.5, '#C38888'], [0.625, '#C34444'],
+    [0.75, '#7F7F7F'], [0.875, '#7F4444'], [1.0, '#7F0000']
+]
 
-# custom_color_scale = [
-#     [0.0, '#FFFFFF'], [0.125, '#C3C3FF'], [0.25, '#7F7FFF'],
-#     [0.375, '#FFC3C3'], [0.5, '#C388C3'], [0.625, '#7F44C3'],
-#     [0.75, '#FF7F7F'], [0.875, '#C3447F'], [1.0, '#7F007F']
-# ]
+# Green (Poverty)             # FFFFFF  887F88  00FF00
+# Black (opiod dispensing)    # FFFFFF  888888  000000
+biColorPoverty =     {'Low Opioid, Low Poverty': '#FFFFFF', 'Low Opioid, Med Poverty': '#C3FFC3', 'Low Opioid, High Poverty': '#7FFF7F',
+                      'Med Opioid, Low Poverty': '#C3C3C3', 'Med Opioid, Med Poverty': '#88C388', 'Med Opioid, High Poverty': '#44C344',
+                      'High Opioid, Low Poverty': '#7F7F7F', 'High Opioid, Med Poverty': '#447F44', 'High Opioid, High Poverty': '#007F00'}
+Legend_Poverty_Color = [
+    [0.0, '#FFFFFF'], [0.125, '#C3FFC3'], [0.25, '#7FFF7F'],
+    [0.375, '#C3C3C3'], [0.5, '#88C388'], [0.625, '#44C344'],
+    [0.75, '#7F7F7F'], [0.875, '#447F44'], [1.0, '#007F00']
+]
+
+# Blue (Unemployment)         # FFFFFF  FF8888  FF0000
+# Black (opiod dispensing)    # FFFFFF  888888  000000
+biColorUnemployment ={'Low Opioid, Low Unemployment': '#FFFFFF', 'Low Opioid, Med Unemployment': '#C3C3FF', 'Low Opioid, High Unemployment': '#7F7FFF',
+                      'Med Opioid, Low Unemployment': '#C3C3C3', 'Med Opioid, Med Unemployment': '#8888C3', 'Med Opioid, High Unemployment': '#4444C3',
+                      'High Opioid, Low Unemployment': '#7F7F7F', 'High Opioid, Med Unemployment': '#44447F', 'High Opioid, High Unemployment': '#00007F'}
+Legend_Unemployment_Color = [
+    [0.0, '#FFFFFF'], [0.125, '#C3C3FF'], [0.25, '#7F7FFF'],
+    [0.375, '#C3C3C3'], [0.5, '#8888C3'], [0.625, '#4444C3'],
+    [0.75, '#7F7F7F'], [0.875, '#44447F'], [1.0, '#00007F']
+]
+
+ChoroColorDict = {"Drug Arrests": biColorDrugArrests,
+                   "Poverty Rates": biColorPoverty,
+                   "Unemployment Rates": biColorUnemployment}
+LegendColorDict = {"Drug Arrests": Legend_DrugArrests_Color,
+                   "Poverty Rates": Legend_Poverty_Color,
+                   "Unemployment Rates": Legend_Unemployment_Color}
+
+categoryOrderDict = {"Drug Arrests": ['Low Opioid, Low Arrests', 'Low Opioid, Med Arrests', 'Low Opioid, High Arrests', 
+                                      'Med Opioid, Low Arrests', 'Med Opioid, Med Arrests', 'Med Opioid, High Arrests', 
+                                      'High Opioid, Low Arrests', 'High Opioid, Med Arrests', 'High Opioid, High Arrests'],
+                     "Poverty Rates": ['Low Opioid, Low Poverty', 'Low Opioid, Med Poverty', 'Low Opioid, High Poverty', 
+                                       'Med Opioid, Low Poverty', 'Med Opioid, Med Poverty', 'Med Opioid, High Poverty', 
+                                       'High Opioid, Low Poverty', 'High Opioid, Med Poverty', 'High Opioid, High Poverty'],
+                     "Unemployment Rates": ['Low Opioid, Low Unemployment', 'Low Opioid, Med Unemployment', 'Low Opioid, High Unemployment', 
+                                       'Med Opioid, Low Unemployment', 'Med Opioid, Med Unemployment', 'Med Opioid, High Unemployment', 
+                                       'High Opioid, Low Unemployment', 'High Opioid, Med Unemployment', 'High Opioid, High Unemployment']}
 
 # Define color scale
 color_scale = [
@@ -159,11 +205,13 @@ fig = px.choropleth_mapbox(
     geojson=counties,  # Replace with your GeoJSON file
     locations='FIPS',
     color='Bivariate',
-    color_continuous_scale=color_scale,
+    #color_continuous_scale=color_scale,
+    color_discrete_map=ChoroColorDict[metric],
     center = {"lat": 38.7214, "lon": -80.6530}, zoom = 5,
-    opacity=0.75,
+    opacity=1.0,
     # hover_name = final_df['County'].tolist(),
     # labels={year_to_filter: metric},
+    category_orders={'Bivariate': categoryOrderDict[metric]},
     mapbox_style="carto-positron",
     title='Opiod Dispensing vs. ' + metric,
     custom_data=['County', 
@@ -172,6 +220,7 @@ fig = px.choropleth_mapbox(
                  year_to_filter + 'Metric',
                  year_to_filter + 'Drug Use']
 )
+
 
 fig.update_traces(hovertemplate='County: %{customdata[0]}<br><br>' + 
                                 'Opioid Dispensing: %{customdata[4]:.1f} (%{customdata[1]})<br>' +
@@ -183,6 +232,42 @@ fig.update_layout(
     )
 )
 
-fig.update_layout(legend_title_text='Combined Categorical Metrics')
+# create the legend
+legend = go.Heatmap(
+    z=[[0.0, 0.125, 0.25], [0.375, 0.5, 0.625], [0.75, 0.875, 1.0]],
+    x=["low", "medium", "high"],
+    y=["low", "medium", "high"],
+    showscale=False,
+    colorscale=LegendColorDict[metric],
+)
 
-st.plotly_chart(fig, theme="streamlit")
+# Create a layout with a color axis for the legend
+layout = go.Layout(
+    title="Legend",
+    height=300,
+    width=270,
+    xaxis=dict(title="Difference in life expectancy"),
+    yaxis=dict(title="Opioid Dispensing Rate"),
+    hovermode=False,
+    coloraxis=dict(
+        cmin=1,  # Set the minimum value
+        cmax=9,  # Set the maximum value
+        colorbar=dict(title="Legend Title")
+    )
+)
+legend = go.Figure(data=[legend], layout=layout)
+legend.update_traces(showlegend=False)
+legend.update_xaxes(fixedrange=True)
+legend.update_yaxes(fixedrange=True)
+legend.update_layout(title_text='Legend', title_x=0.5)
+
+# have legend next to figure
+col1, col2 = st.columns([3, 4])
+with col1:
+    st.plotly_chart(legend, theme="streamlit")
+with col2:
+    st.plotly_chart(fig, theme="streamlit")
+
+# fig.update_layout(legend_title_text='Combined Categorical Metrics')
+
+# st.plotly_chart(fig, theme="streamlit")
