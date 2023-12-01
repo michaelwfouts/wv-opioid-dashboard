@@ -128,6 +128,18 @@ drug_use_df = drug_use_df.rename(columns={year_to_filter: year_to_filter + 'Drug
 final_df = merged_df.merge(drug_use_df, on='County', how='inner')
 final_df = final_df.sort_values(by=[year_to_filter + 'Drug Use', year_to_filter + 'Metric'])
 
+# # Blue (opiod dispensing)    # FFFFFF  8888FF  0000FF
+# # Cyan (metric 1)            # FFFFFF  88FFFF  00FFFF
+# biColor = {'low_low': '#FFFFFF', 'low_medium': '#C3C3FF', 'low_high': '#7F7FFF',
+#            'medium_low': '#C3FFFF', 'medium_medium': '#88C3FF', 'medium_high': '#447FFF',
+#            'high_low': '#7FFFFF', 'high_medium': '#C3447F', 'high_high': '#7F007F'}
+
+# custom_color_scale = [
+#     [0.0, '#FFFFFF'], [0.125, '#C3C3FF'], [0.25, '#7F7FFF'],
+#     [0.375, '#FFC3C3'], [0.5, '#C388C3'], [0.625, '#7F44C3'],
+#     [0.75, '#FF7F7F'], [0.875, '#C3447F'], [1.0, '#7F007F']
+# ]
+
 # Define color scale
 color_scale = [
     'rgb(255,0,0)',  # High Metric1, Low Metric2

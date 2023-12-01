@@ -14,7 +14,6 @@ st.set_page_config(
     layout="centered",
 )
 
-
 # Load US counties information
 with urlopen('https://raw.githubusercontent.com/plotly/datasets/master/geojson-counties-fips.json') as response:
     counties = json.load(response)
@@ -62,33 +61,33 @@ for i in range(len(fips)):
     value2 = merged_df2.iloc[i][year_to_filter]
     if value <= min + third:
         if value2 <= min2 + third2:
-            ranges.append("low_low")
+            ranges.append("Low Opioid, Low Life Expt")
         elif min2 + third2 <= value2 and value2 <= max2 - third2:
-            ranges.append("low_medium")
+            ranges.append("Low Opioid, Med Life Expt")
         elif max2 - third2 <= value2:
-            ranges.append("low_high")
+            ranges.append("Low Opioid, High Life Expt")
     elif min + third <= value and value <= max - third:
         if value2 <= min2 + third2:
-            ranges.append("medium_low")
+            ranges.append("Med Opioid, Low Life Expt")
         elif min2 + third2 <= value2 and value2 <= max2 - third2:
-            ranges.append("medium_medium")
+            ranges.append("Med Opioid, Med Life Expt")
         elif max2 - third2 <= value2:
-            ranges.append("medium_high")
+            ranges.append("Med Opioid, High Life Expt")
     elif max - third <= value:
         if value2 <= min2 + third2:
-            ranges.append("high_low")
+            ranges.append("High Opioid, Low Life Expt")
         elif min2 + third2 <= value2 and value2 <= max2 - third2:
-            ranges.append("high_medium")
+            ranges.append("High Opioid, Med Life Expt")
         elif max2 - third2 <= value2:
-            ranges.append("high_high")
-merged_df["ranges"] = ranges
+            ranges.append("High Opioid, High Life Expt")
+merged_df["values"] = ranges
 
 # blue = FFFFFF 8888FF 0000FF
 # red =  FFFFFF FF8888 FF0000
 # average colors together
-biColor = {'low_low': '#FFFFFF', 'low_medium': '#C3C3FF', 'low_high': '#7F7FFF',
-           'medium_low': '#FFC3C3', 'medium_medium': '#C388C3', 'medium_high': '#7F44C3',
-           'high_low': '#FF7F7F', 'high_medium': '#C3447F', 'high_high': '#7F007F'}
+biColor = {'Low Opioid, Low Life Expt': '#FFFFFF', 'Low Opioid, Med Life Expt': '#C3C3FF', 'Low Opioid, High Life Expt': '#7F7FFF',
+           'Med Opioid, Low Life Expt': '#FFC3C3', 'Med Opioid, Med Life Expt': '#C388C3', 'Med Opioid, High Life Expt': '#7F44C3',
+           'High Opioid, Low Life Expt': '#FF7F7F', 'High Opioid, Med Life Expt': '#C3447F', 'High Opioid, High Life Expt': '#7F007F'}
 
 custom_color_scale = [
     [0.0, '#FFFFFF'], [0.125, '#C3C3FF'], [0.25, '#7F7FFF'],
@@ -99,23 +98,26 @@ custom_color_scale = [
 fig = px.choropleth_mapbox(merged_df,
                             geojson=counties,  # You can provide your own GeoJSON file or use px.data.gapminder()
                             locations='FIPS',
-                            color='ranges',
+                            color='values',
                             color_discrete_map=biColor,
                             hover_name=df['County'].tolist(),
                             center = {"lat": 38.7214, "lon": -80.6530}, zoom = 5,
                             mapbox_style="carto-positron",
-                            title='Bivariate Choropleth Map',
-                            labels={'Variable1': 'Variable 1'},
-                            opacity=1)
+                            title='Opiod Dispensing Rate vs Life Expectancy',
+                            labels={'Variable1': 'Variable 1', "Legend": " "},
+                            category_orders={'values': ['Low Opioid, Low Life Expt', 'Low Opioid, Med Life Expt', 'Low Opioid, High Life Expt', 
+                                                        'Med Opioid, Low Life Expt', 'Med Opioid, Med Life Expt', 'Med Opioid, High Life Expt', 
+                                                        'High Opioid, Low Life Expt', 'High Opioid, Med Life Expt', 'High Opioid, High Life Expt']},
+                            opacity=1.0)
 # removes the legend
-fig.update_traces(showlegend=False)
+#fig.update_traces(showlegend=False)
 fig.update_layout(width=550)
 
 # create the legend
 legend = go.Heatmap(
     z=[[0.0, 0.125, 0.25], [0.375, 0.5, 0.625], [0.75, 0.875, 1.0]],
-    x=[1, 2, 3],
-    y=[1, 2, 3],
+    x=["low", "medium", "high"],
+    y=["low", "medium", "high"],
     showscale=False,
     colorscale=custom_color_scale,
 )
@@ -124,9 +126,10 @@ legend = go.Heatmap(
 layout = go.Layout(
     title="Legend",
     height=300,
-    width=230,
-    xaxis=dict(title="Difference in life expectency"),
-    yaxis=dict(title="Drug usage"),
+    width=270,
+    xaxis=dict(title="Difference in life expectancy"),
+    yaxis=dict(title="Opioid Dispensing Rate"),
+    hovermode=False,
     coloraxis=dict(
         cmin=1,  # Set the minimum value
         cmax=9,  # Set the maximum value
@@ -135,13 +138,16 @@ layout = go.Layout(
 )
 legend = go.Figure(data=[legend], layout=layout)
 legend.update_traces(showlegend=False)
+legend.update_xaxes(fixedrange=True)
+legend.update_yaxes(fixedrange=True)
+legend.update_layout(title_text='Legend', title_x=0.5)
 
 # have legend next to figure
-col1, col2 = st.columns([4, 1])
+col1, col2 = st.columns([3, 4])
 with col1:
-    st.plotly_chart(fig, theme="streamlit")
-with col2:
     st.plotly_chart(legend, theme="streamlit")
+with col2:
+    st.plotly_chart(fig, theme="streamlit")
 
 #st.plotly_chart(fig, theme="streamlit")
 #st.plotly_chart(legend, theme="streamlit")
