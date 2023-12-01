@@ -155,9 +155,6 @@ with col2:
 # Define the content of the page
 st.write("# Page Under Construction")
 st.write("This page is currently under construction. Please check back later for updates.")
-<<<<<<< HEAD:pages/5_5_-_Drug_Usage_vs_LIfe_Expectancy.py
 
 footer="Sources: Centers for Disease Control and Prevention (CDC), Global Health Data Exchange (GHDx), County Health Rankings and Roadmaps"
 st.markdown(footer)
-=======
->>>>>>> 4e864ee6e5c352c7c89679f49ebb608abf7935d4:pages/5_5_-_Drug_Usage_vs_Life_Expectancy.py
