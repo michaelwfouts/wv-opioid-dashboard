@@ -14,6 +14,21 @@ st.set_page_config(
     layout="centered",
 )
 
+# write a title
+st.write("# Opioid Dispensing Rate vs. Life Expectancy")
+
+# make a divider
+st.markdown("""---""")
+
+# write a description
+st.write("This visualization compares the opiod dispensing rate in each county with the difference in the national life expectancy\
+          by using a bivariate choropleth map.")
+st.write("Bivariate choropleth maps measure two different metrics on the same map. Look at the legend to see what color correlates\
+          with which metric and how these colors can combine.")
+
+# make a divider
+st.markdown("""---""")
+
 # Load US counties information
 with urlopen('https://raw.githubusercontent.com/plotly/datasets/master/geojson-counties-fips.json') as response:
     counties = json.load(response)
@@ -33,6 +48,8 @@ lifeExptDF = pd.read_csv("data/National Average Lifespan.csv")
 
 # get year data with slider
 year_to_filter = str(st.slider('Year', 2006, 2020, 2020))    # 2006 to 2020 for now
+
+st.write("Choropleth maps may take some time to load.")
 
 # Create overall dataframes
 df['County'] = df['County'].str.replace(' County', '', case=False)
@@ -108,7 +125,12 @@ fig = px.choropleth_mapbox(merged_df,
                             category_orders={'values': ['Low Opioid, Low Life Expt', 'Low Opioid, Med Life Expt', 'Low Opioid, High Life Expt', 
                                                         'Med Opioid, Low Life Expt', 'Med Opioid, Med Life Expt', 'Med Opioid, High Life Expt', 
                                                         'High Opioid, Low Life Expt', 'High Opioid, Med Life Expt', 'High Opioid, High Life Expt']},
-                            opacity=1.0)
+                            opacity=1.0,
+                            custom_data=['County', 
+                                        'Drug Use Cat', 
+                                        'Metric Rate Cat', 
+                                        year_to_filter + 'Metric',
+                                        year_to_filter + 'Drug Use'])
 # removes the legend
 #fig.update_traces(showlegend=False)
 fig.update_layout(width=550)
@@ -153,5 +175,5 @@ with col2:
 #st.plotly_chart(legend, theme="streamlit")
 
 # Define the content of the page
-st.write("# Page Under Construction")
-st.write("This page is currently under construction. Please check back later for updates.")
+# st.write("# Page Under Construction")
+# st.write("This page is currently under construction. Please check back later for updates.")

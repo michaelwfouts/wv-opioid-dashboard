@@ -225,7 +225,7 @@ fig = px.choropleth_mapbox(
 fig.update_traces(hovertemplate='County: %{customdata[0]}<br><br>' + 
                                 'Opioid Dispensing: %{customdata[4]:.1f} (%{customdata[1]})<br>' +
                                  metric + ': %{customdata[3]:.1f} (%{customdata[2]})')
-
+fig.update_layout(width=550)
 fig.update_layout(
     hoverlabel=dict(
         align="left"
@@ -246,7 +246,7 @@ layout = go.Layout(
     title="Legend",
     height=300,
     width=270,
-    xaxis=dict(title="Difference in life expectancy"),
+    xaxis=dict(title=metric),
     yaxis=dict(title="Opioid Dispensing Rate"),
     hovermode=False,
     coloraxis=dict(
