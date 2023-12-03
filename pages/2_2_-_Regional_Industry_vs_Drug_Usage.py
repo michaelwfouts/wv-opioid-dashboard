@@ -51,11 +51,11 @@ industry_to_filter = st.selectbox(
 )
 
 # read in data from the dataset
-df_employ_const_ext = pd.read_csv('/Users/emily/Documents/GitHub/wv-opioid-dashboard/data/WV Drug Epidemic Dataset.xlsx - Employment per 1000 jobs- Construction&Extraction .csv')
-df_employ_farm_fish_forest = pd.read_csv('/Users/emily/Documents/GitHub/wv-opioid-dashboard/data/WV Drug Epidemic Dataset.xlsx - Employment per 1000 jobs - Farm&Fish&Forest.csv')
-df_employ_install_mainten_repair = pd.read_csv('/Users/emily/Documents/GitHub/wv-opioid-dashboard/data/WV Drug Epidemic Dataset.xlsx - Employment per 1000 jobs - Install&Mainten&Repair.csv')
-df_employ_prod = pd.read_csv('/Users/emily/Documents/GitHub/wv-opioid-dashboard/data/WV Drug Epidemic Dataset.xlsx - Employment per 1000 jobs - Production.csv')
-df_drug_usage = pd.read_csv('/Users/emily/Documents/GitHub/wv-opioid-dashboard/data/WV Drug Epidemic Dataset.xlsx - Opioid Dispensing Rate per 100.csv')
+df_employ_const_ext = pd.read_csv('data/WV Drug Epidemic Dataset.xlsx - Employment per 1000 jobs- Construction&Extraction .csv')
+df_employ_farm_fish_forest = pd.read_csv('data/WV Drug Epidemic Dataset.xlsx - Employment per 1000 jobs - Farm&Fish&Forest.csv')
+df_employ_install_mainten_repair = pd.read_csv('data/WV Drug Epidemic Dataset.xlsx - Employment per 1000 jobs - Install&Mainten&Repair.csv')
+df_employ_prod = pd.read_csv('data/WV Drug Epidemic Dataset.xlsx - Employment per 1000 jobs - Production.csv')
+df_drug_usage = pd.read_csv('data/WV Drug Epidemic Dataset.xlsx - Opioid Dispensing Rate per 100.csv')
 
 
 # get pertinent info depending on selected year and industry
@@ -111,7 +111,7 @@ with urlopen('https://raw.githubusercontent.com/plotly/datasets/master/geojson-c
     counties = json.load(response)
 
 # get a list of FIPS codes for WV counties
-df_fips = pd.read_csv('/Users/emily/Documents/GitHub/wv-opioid-dashboard/data/WV FIPS.csv')
+df_fips = pd.read_csv('data/WV FIPS.csv')
 
 # sort the FIPS codes so that it is in the same order as the counties alphabetically (McDowell County is out of place in orginial dataframe)
 df_fips_sort = df_fips.sort_values('County')
@@ -318,16 +318,7 @@ with col2:
 
 # + '<br>%{x} employed per 100 jobs<br>%{y} opioid dispensing rate per 100 people'
 
-# format the data shown when hovering over a county
-#fig.update_traces(hovertemplate='County: \n' +
-#                                'Num of Employed: \n' +
-#                                'Opioid Dispensing Rate: ')
 
-# rename the legend title
-#fig.update_layout(legend_title_text='Combined Categorical Metrics')
-
-# add plot to page
-#st.plotly_chart(fig, theme="streamlit")
 
 footer="Sources: Centers for Disease Control and Prevention (CDC), US Bureau of Labor Statistics, The Washington Post"
 st.markdown(footer)
