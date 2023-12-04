@@ -50,9 +50,6 @@ industry_to_filter = st.selectbox(
     ["Construction and Extraction", "Farming, Fishing, and Forestry", "Installation, Maintenance, and Repair", "Production"]
 )
 
-#year_to_filter = "2020"
-#industry_to_filter = "Farming, Fishing, and Forestry"
-
 # read in data from the dataset
 df_employ_const_ext = pd.read_csv('data/WV Drug Epidemic Dataset.xlsx - Employment per 1000 jobs- Construction&Extraction .csv')
 df_employ_farm_fish_forest = pd.read_csv('data/WV Drug Epidemic Dataset.xlsx - Employment per 1000 jobs - Farm&Fish&Forest.csv')
@@ -324,6 +321,8 @@ fig = px.choropleth_mapbox(
                  'drug_usage_level']
 )
 
+
+# update the data displayed when hovering over a county
 fig.update_traces(hovertemplate='%{customdata[0]}<br><br>' + 
                                 'Opioid Dispensing Rate Per 100 People: %{customdata[3]} (%{customdata[4]})<br>' +
                                 'Employment per 1000 Jobs: %{customdata[1]} (%{customdata[2]})<br>')
@@ -343,7 +342,7 @@ legend = go.Heatmap(
     colorscale=LegendColorDict["Employment"],
 )
 
-# Create a layout with a color axis for the legend
+# create a layout with a color axis for the legend
 layout = go.Layout(
     title="Legend",
     height=300,
@@ -370,7 +369,6 @@ with col1:
 with col2:
     st.plotly_chart(fig, theme="streamlit")
 
-
-
+# add footer info
 footer="Sources: Centers for Disease Control and Prevention (CDC), US Bureau of Labor Statistics, The Washington Post"
 st.markdown(footer)
