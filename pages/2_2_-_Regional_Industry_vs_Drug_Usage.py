@@ -57,6 +57,8 @@ df_employ_install_mainten_repair = pd.read_csv('data/WV Drug Epidemic Dataset.xl
 df_employ_prod = pd.read_csv('data/WV Drug Epidemic Dataset.xlsx - Employment per 1000 jobs - Production.csv')
 df_drug_usage = pd.read_csv('data/WV Drug Epidemic Dataset.xlsx - Opioid Dispensing Rate per 100.csv')
 
+# get a list of the counties
+data_counties = df_employ_const_ext["County"]
 
 # get pertinent info depending on selected year and industry
 if year_to_filter == "2019" and industry_to_filter == "Construction and Extraction":
@@ -116,6 +118,7 @@ df_fips = pd.read_csv('data/WV FIPS.csv')
 # sort the FIPS codes so that it is in the same order as the counties alphabetically (McDowell County is out of place in orginial dataframe)
 df_fips_sort = df_fips.sort_values('County')
 data_fips_sort = df_fips_sort["FIPS"]
+data_fips_sort = data_fips_sort.reset_index(drop=True)
 
 # -------------------------------
 # check for entries of 'na' in the data and convert data type to float
@@ -165,6 +168,9 @@ drug_usage_range_high = [np.nanmin(data_drug_usage)+interval+interval, np.nanmax
 # -------------------------------
 # get the bivariate category for each county
 
+# define variables for categories
+data_employ_level = np.empty(55, dtype="<U100")
+data_drug_usage_level = np.empty(55, dtype="<U100")
 data_bivariate = np.empty(55, dtype="<U100")
 
 # for each county
@@ -172,38 +178,56 @@ for iCounty in range(55):
 
     # if employment is low and drug usage is low
     if (employ_range_low[0] <= data_employ[iCounty] < employ_range_low[1]) and (drug_usage_range_low[0] <= data_drug_usage[iCounty] < drug_usage_range_low[1]):
+        data_employ_level[iCounty] = 'Low'
+        data_drug_usage_level[iCounty] = 'Low'
         data_bivariate[iCounty] = 'Low Opioid Dispensing, Low Employment'
 
     # if employment is low and drug usage is medium
     elif (employ_range_low[0] <= data_employ[iCounty] < employ_range_low[1]) and (drug_usage_range_med[0] <= data_drug_usage[iCounty] < drug_usage_range_med[1]):
+        data_employ_level[iCounty] = 'Low'
+        data_drug_usage_level[iCounty] = 'Medium'
         data_bivariate[iCounty] = 'Medium Opioid Dispensing, Low Employment'
 
     # if employment is low and drug usage is high
     elif (employ_range_low[0] <= data_employ[iCounty] < employ_range_low[1]) and (drug_usage_range_high[0] <= data_drug_usage[iCounty] <= drug_usage_range_high[1]):
+        data_employ_level[iCounty] = 'Low'
+        data_drug_usage_level[iCounty] = 'High'
         data_bivariate[iCounty] = 'High Opioid Dispensing, Low Employment'
 
     # if employment is medium and drug usage is low
     elif (employ_range_med[0] <= data_employ[iCounty] < employ_range_med[1]) and (drug_usage_range_low[0] <= data_drug_usage[iCounty] < drug_usage_range_low[1]):
+        data_employ_level[iCounty] = 'Medium'
+        data_drug_usage_level[iCounty] = 'Low'
         data_bivariate[iCounty] = 'Low Opioid Dispensing, Medium Employment'
 
     # if employment is medium and drug usage is medium
     elif (employ_range_med[0] <= data_employ[iCounty] < employ_range_med[1]) and (drug_usage_range_med[0] <= data_drug_usage[iCounty] < drug_usage_range_med[1]):
+        data_employ_level[iCounty] = 'Medium'
+        data_drug_usage_level[iCounty] = 'Medium'
         data_bivariate[iCounty] = 'Medium Opioid Dispensing, Medium Employment'
 
     # if employment is medium and drug usage is high
     elif (employ_range_med[0] <= data_employ[iCounty] < employ_range_med[1]) and (drug_usage_range_high[0] <= data_drug_usage[iCounty] <= drug_usage_range_high[1]):
+        data_employ_level[iCounty] = 'Medium'
+        data_drug_usage_level[iCounty] = 'High'
         data_bivariate[iCounty] = 'High Opioid Dispensing, Medium Employment'
 
     # if employment is high and drug usage is low
     elif (employ_range_high[0] <= data_employ[iCounty] <= employ_range_high[1]) and (drug_usage_range_low[0] <= data_drug_usage[iCounty] < drug_usage_range_low[1]):
+        data_employ_level[iCounty] = 'High'
+        data_drug_usage_level[iCounty] = 'Low'
         data_bivariate[iCounty] = 'Low Opioid Dispensing, High Employment'
 
     # if employment is high and drug usage is medium
     elif (employ_range_high[0] <= data_employ[iCounty] <= employ_range_high[1]) and (drug_usage_range_med[0] <= data_drug_usage[iCounty] < drug_usage_range_med[1]):
+        data_employ_level[iCounty] = 'High'
+        data_drug_usage_level[iCounty] = 'Medium'
         data_bivariate[iCounty] = 'Medium Opioid Dispensing, High Employment'
 
     # if employment is high and drug usage is high
     elif (employ_range_high[0] <= data_employ[iCounty] <= employ_range_high[1]) and (drug_usage_range_high[0] <= data_drug_usage[iCounty] <= drug_usage_range_high[1]):
+        data_employ_level[iCounty] = 'High'
+        data_drug_usage_level[iCounty] = 'High'
         data_bivariate[iCounty] = 'High Opioid Dispensing, High Employment'
 
     elif np.isnan(data_employ[iCounty]):
@@ -217,6 +241,11 @@ for iCounty in range(55):
 
 # make final dataframe
 data = {'fips': data_fips_sort,
+        'county': data_counties,
+        'employment': data_employ,
+        'employment_level': data_employ_level,
+        'drug_usage': data_drug_usage,
+        'drug_usage_level': data_drug_usage_level,
         'bivariate': data_bivariate}
 df_final = pd.DataFrame(data)
 
@@ -267,7 +296,21 @@ fig = px.choropleth_mapbox(
     opacity=1.0,
     category_orders={'bivariate': categoryOrderDict["Employment"]},
     mapbox_style="carto-positron",
-    hover_name = df_employ_const_ext["County"].tolist()
+    custom_data=['county',
+                 'employment',
+                 'employment_level',
+                 'drug_usage',
+                 'drug_usage_level']
+)
+
+fig.update_traces(hovertemplate='%{customdata[0]}<br><br>' + 
+                                'Opioid Dispensing Rate Per 100 People: %{customdata[3]:.1f} (%{customdata[4]})<br>' +
+                                'Employment per 1000 Jobs: %{customdata[1]:.1f} (%{customdata[2]})<br>')
+
+fig.update_layout(
+    hoverlabel=dict(
+        align="left"
+    )
 )
 
 # create the legend
@@ -305,18 +348,6 @@ with col1:
     st.plotly_chart(legend, theme="streamlit")
 with col2:
     st.plotly_chart(fig, theme="streamlit")
-
-
-
-
-
-#county_list = df_employ_const_ext["County"]
-#df_traces = pd.DataFrame({'bivariate': data_bivariate},
-#                         index = (county_list))
-
-#fig.update_traces(hovertemplate = )
-
-# + '<br>%{x} employed per 100 jobs<br>%{y} opioid dispensing rate per 100 people'
 
 
 
