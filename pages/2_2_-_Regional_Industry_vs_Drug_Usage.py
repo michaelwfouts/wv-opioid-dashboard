@@ -50,6 +50,9 @@ industry_to_filter = st.selectbox(
     ["Construction and Extraction", "Farming, Fishing, and Forestry", "Installation, Maintenance, and Repair", "Production"]
 )
 
+#year_to_filter = "2020"
+#industry_to_filter = "Farming, Fishing, and Forestry"
+
 # read in data from the dataset
 df_employ_const_ext = pd.read_csv('data/WV Drug Epidemic Dataset.xlsx - Employment per 1000 jobs- Construction&Extraction .csv')
 df_employ_farm_fish_forest = pd.read_csv('data/WV Drug Epidemic Dataset.xlsx - Employment per 1000 jobs - Farm&Fish&Forest.csv')
@@ -230,8 +233,26 @@ for iCounty in range(55):
         data_drug_usage_level[iCounty] = 'High'
         data_bivariate[iCounty] = 'High Opioid Dispensing, High Employment'
 
-    elif np.isnan(data_employ[iCounty]):
+    # if employment is not available and drug usage is low
+    elif np.isnan(data_employ[iCounty]) and (drug_usage_range_low[0] <= data_drug_usage[iCounty] < drug_usage_range_low[1]):
+        data_employ_level[iCounty] = 'Not Available'
+        data_drug_usage_level[iCounty] = 'Low'
         data_bivariate[iCounty] = 'Data Not Available'
+        data_employ[iCounty] = 'na';
+
+    # if employment is not available and drug usage is medium
+    elif np.isnan(data_employ[iCounty]) and (drug_usage_range_med[0] <= data_drug_usage[iCounty] < drug_usage_range_med[1]):
+        data_employ_level[iCounty] = 'Not Available'
+        data_drug_usage_level[iCounty] = 'Medium'
+        data_bivariate[iCounty] = 'Data Not Available'
+        data_employ[iCounty] = 'na';
+
+    # if employment is not available and drug usage is high
+    elif np.isnan(data_employ[iCounty]) and (drug_usage_range_high[0] <= data_drug_usage[iCounty] < drug_usage_range_high[1]):
+        data_employ_level[iCounty] = 'Not Available'
+        data_drug_usage_level[iCounty] = 'High'
+        data_bivariate[iCounty] = 'Data Not Available'
+        data_employ[iCounty] = 'na';
 
     else:
         data_bivariate[iCounty] = 'Needs Fixed'
@@ -304,8 +325,8 @@ fig = px.choropleth_mapbox(
 )
 
 fig.update_traces(hovertemplate='%{customdata[0]}<br><br>' + 
-                                'Opioid Dispensing Rate Per 100 People: %{customdata[3]:.1f} (%{customdata[4]})<br>' +
-                                'Employment per 1000 Jobs: %{customdata[1]:.1f} (%{customdata[2]})<br>')
+                                'Opioid Dispensing Rate Per 100 People: %{customdata[3]} (%{customdata[4]})<br>' +
+                                'Employment per 1000 Jobs: %{customdata[1]} (%{customdata[2]})<br>')
 
 fig.update_layout(
     hoverlabel=dict(
