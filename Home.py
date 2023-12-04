@@ -21,7 +21,7 @@ st.markdown(
     "- **Analyze Key Metrics**: We will examine important metrics such as drug usage, poverty, and treatment access."
 )
 st.markdown(
-    "- **Visualize Data**: Utilize interactive charts and maps to visualize data, making it easier to understand the trends and patterns."
+    "- **Visualize Data**: We utilize interactive charts and maps to visualize data, making it easier to understand the trends and patterns."
 )
 st.markdown(
     "- **Raise Awareness**: Our goal is to increase awareness of the opioid epidemic's impact on West Virginia and contribute to ongoing efforts to combat it."
@@ -31,7 +31,7 @@ st.markdown(
 st.subheader("Data Sources:")
 st.markdown(
     "We have collected data from various sources, including government agencies, healthcare providers, and research organizations. "
-    "Our app integrates this data to provide a comprehensive view of the situation. Specific sources will be referenced in the final version of the app."
+    "Our app integrates this data to provide a comprehensive view of the situation. Specific sources are referenced on the pages that they are used."
 )
 
 # Get started
