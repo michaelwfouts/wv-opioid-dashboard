@@ -23,10 +23,10 @@ fips = load_fips('data/WV FIPS.csv')
 
 # maps metric name to a file name
 fileDict = {
-    'Drug Arrests':         "data/WV Drug Epidemic Dataset.xlsx - Drug Arrests (Raw).csv",
+    'Life Expectancy':      "data/WV Drug Epidemic Dataset.xlsx - Life Expectancy.csv",
     'Drug Mortality':       "data/WV Drug Epidemic Dataset.xlsx - Drug Mortality (Per 100,000).csv",
     'Illicit Drug Use':     "data/WV Drug Epidemic Dataset.xlsx - Illicit Drug Past Mo (Percent).csv",
-    'Life Expectancy':      "data/WV Drug Epidemic Dataset.xlsx - Life Expectancy.csv",
+    'Drug Arrests':         "data/WV Drug Epidemic Dataset.xlsx - Drug Arrests (Raw).csv",
     'Population':           "data/WV Drug Epidemic Dataset.xlsx - Population.csv",
     'Poverty Rates':        "data/WV Drug Epidemic Dataset.xlsx - Poverty Rates (Percent).csv",
     'Unemployment Rates':   "data/WV Drug Epidemic Dataset.xlsx - Unemployment Rates (Percent).csv"
@@ -94,5 +94,5 @@ fig.update_layout(
 # Show the plot
 st.plotly_chart(fig, theme="streamlit")
 
-footer="Sources: West Virginia Board of Medicine, White House, Centers for Disease Control and Prevention (CDC), United States Food and Drug Administration (FDA)"
+footer="Sources: West Virginia Board of Medicine, White House, Centers for Disease Control and Prevention (CDC), United States Food and Drug Administration (FDA), Department of Justice (DOJ)"
 st.markdown(footer)
