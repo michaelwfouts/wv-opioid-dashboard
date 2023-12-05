@@ -40,6 +40,8 @@ lifeExptDF = pd.read_csv("data/National Average Lifespan.csv")
 # get year data with slider
 year_to_filter = str(st.slider('Year', 2006, 2020, 2020))    # 2006 to 2020 for now
 
+st.write("Choropleth maps may take some time to load.")
+
 # Create overall dataframes
 df['County'] = df['County'].str.replace(' County', '', case=False)
 df[year_to_filter] = df[year_to_filter].astype(str)
@@ -116,7 +118,9 @@ fig = px.choropleth_mapbox(merged_df,
                             category_orders={'values': ['Low Opioid, Low Life Expt', 'Low Opioid, Med Life Expt', 'Low Opioid, High Life Expt', 
                                                         'Med Opioid, Low Life Expt', 'Med Opioid, Med Life Expt', 'Med Opioid, High Life Expt', 
                                                         'High Opioid, Low Life Expt', 'High Opioid, Med Life Expt', 'High Opioid, High Life Expt']},
-                            opacity=1.0)
+                            opacity=1.0,
+                            custom_data=['County', 
+                                year_to_filter,] )
 # removes the legend
 #fig.update_traces(showlegend=False)
 fig.update_layout(width=550)
