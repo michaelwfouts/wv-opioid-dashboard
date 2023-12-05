@@ -39,7 +39,7 @@ fileDict = {
 }
 
 # Visualization Explanation
-st.write("# Historical Events Visualization")
+st.write("# Historical Events")
 st.markdown("""---""")
 st.write("This visualization takes an event perspective to the opioid epidemic, events related to the crisis from 1995 to current day.  Event information was taken from several sources and can be filtered by source. Metrics of consideration are aggregated over the 55 counties for the entire state of WV.")
 st.markdown("""---""")

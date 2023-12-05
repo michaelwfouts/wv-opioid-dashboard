@@ -12,7 +12,7 @@ import json
 
 # Set the page title
 st.set_page_config(
-    page_title="Industry vs Drug Usage",
+    page_title="Regional Industry vs Drug Usage",
     page_icon="🛠️",
     layout="centered",
 )
@@ -21,7 +21,7 @@ st.set_page_config(
 # TITLE AND INTRO BLOCKS
 
 # write a title
-st.write("# Employment in Regional Industries vs. Opioid Dispensing Rate")
+st.write("# Regional Industry vs Drug Usage")
 
 # make a divider
 st.markdown("""---""")

@@ -15,7 +15,7 @@ st.set_page_config(
 )
 
 # Visualization Explaination
-st.write("# Drug Usage vs. Life Expectancy")
+st.write("# Drug Usage vs Life Expectancy")
 st.markdown("""---""")
 st.write("While it can be hypothesized that the higher the life expectancy, the lower the opioid usage with the epidemic, this relationship needs to be explored in more detail.  These visualizations aim at looking at this from a geographical perspective to see if this is true.")
 st.markdown("""---""")
