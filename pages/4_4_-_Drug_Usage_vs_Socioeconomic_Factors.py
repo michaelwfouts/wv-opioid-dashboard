@@ -208,7 +208,7 @@ color_scale = [
 # Create choropleth map
 fig = px.choropleth_mapbox(
     final_df,
-    geojson=counties,  # Replace with your GeoJSON file
+    geojson=counties,
     locations='FIPS',
     color='Bivariate',
     #color_continuous_scale=color_scale,

@@ -44,20 +44,22 @@ year_to_filter = str(st.slider('Year', 2006, 2020, 2020))    # 2006 to 2020 for 
 df['County'] = df['County'].str.replace(' County', '', case=False)
 df[year_to_filter] = df[year_to_filter].astype(str)
 df[year_to_filter] = df[year_to_filter].str.replace(',', '', case=False).astype(float)
-lifeExpectancy = lifeExptDF.loc[lifeExptDF['Year'] == year_to_filter, 'Expectancy']
-lifeExpectancy = lifeExpectancy[lifeExpectancy.keys()[0]]
-df[year_to_filter] = lifeExpectancy - df[year_to_filter]
-merged_df = df.merge(fipsDF, on='County', how='inner')
+# lifeExpectancy = lifeExptDF.loc[lifeExptDF['Year'] == year_to_filter, 'Expectancy']
+# lifeExpectancy = lifeExpectancy[lifeExpectancy.keys()[0]]
+# df[year_to_filter] = lifeExpectancy - df[year_to_filter]
+merged_df = df.merge(fipsDF, on='County', how='inner').sort_values('County')
 
 df2['County'] = df2['County'].str.replace(' County', '', case=False)
 df2[year_to_filter] = df2[year_to_filter].astype(str)
 df2[year_to_filter] = df2[year_to_filter].str.replace(',', '', case=False).astype(float)
-merged_df2 = df2
+merged_df2 = df2.sort_values('County')
 
 # apply high/medium/low column to dataframes
+# Life Expectancy
 max = merged_df[year_to_filter].max()
 min = merged_df[year_to_filter].min()
 third = (max - min)/3
+# Opioid Dispensing
 max2 = merged_df2[year_to_filter].max()
 min2 = merged_df2[year_to_filter].min()
 third2 = (max2 - min2)/3
@@ -69,21 +71,21 @@ for i in range(len(fips)):
         if value2 <= min2 + third2:
             ranges.append("Low Opioid, Low Life Expt")
         elif min2 + third2 <= value2 and value2 <= max2 - third2:
-            ranges.append("Low Opioid, Med Life Expt")
+            ranges.append("Med Opioid, Low Life Expt")
         elif max2 - third2 <= value2:
-            ranges.append("Low Opioid, High Life Expt")
+            ranges.append("High Opioid, Low Life Expt")
     elif min + third <= value and value <= max - third:
         if value2 <= min2 + third2:
-            ranges.append("Med Opioid, Low Life Expt")
+            ranges.append("Low Opioid, Med Life Expt")
         elif min2 + third2 <= value2 and value2 <= max2 - third2:
             ranges.append("Med Opioid, Med Life Expt")
         elif max2 - third2 <= value2:
-            ranges.append("Med Opioid, High Life Expt")
+            ranges.append("High Opioid, Med Life Expt")
     elif max - third <= value:
         if value2 <= min2 + third2:
-            ranges.append("High Opioid, Low Life Expt")
+            ranges.append("Low Opioid, High Life Expt")
         elif min2 + third2 <= value2 and value2 <= max2 - third2:
-            ranges.append("High Opioid, Med Life Expt")
+            ranges.append("Med Opioid, High Life Expt")
         elif max2 - third2 <= value2:
             ranges.append("High Opioid, High Life Expt")
 merged_df["values"] = ranges
@@ -133,7 +135,7 @@ layout = go.Layout(
     title="Legend",
     height=300,
     width=270,
-    xaxis=dict(title="Difference in life expectancy"),
+    xaxis=dict(title="Life Expectancy"),
     yaxis=dict(title="Opioid Dispensing Rate"),
     hovermode=False,
     coloraxis=dict(
@@ -175,6 +177,7 @@ fig2.update_layout(title='Life Expectancy Comparison',
                    yaxis_title='Life Expectancy')
 
 fig2.update_xaxes(range=[2000, 2023])
+fig2.update_layout(hovermode="x unified")
 
 # Show the plot
 # st.plotly_chart(fig2, theme="streamlit")
@@ -190,17 +193,23 @@ drug_use_df = drug_use_df.rename(columns={year_to_filter: 'Opioid Dispensing Rat
 merged_df = df.merge(drug_use_df, on='County', how='inner')
 
 # Create a dot plot with Plotly Express
-fig3 = px.scatter(merged_df, x='Opioid Dispensing Rate', y='Life Expectancy')
+fig3 = px.scatter(merged_df, 
+                  x='Opioid Dispensing Rate', 
+                  y='Life Expectancy',
+                  custom_data=['County'])
+
+fig3.update_traces(hovertemplate='County: %{customdata[0]}<br><br>' + 
+                                'Opioid Dispensing: %{x:.2f} <br>' +
+                                'Life Expectancy: %{y:.2f}')
 
 # Customize layout
-fig3.update_layout(title='Opioid Dispensing Rate vs Life Expectancy', xaxis_title='Opioid Dispensing Rate', yaxis_title='Life Expectancy')
+fig3.update_layout(title='Opioid Dispensing Rate vs Life Expectancy', 
+                   xaxis_title='Opioid Dispensing Rate', 
+                   yaxis_title='Life Expectancy')
 
-# have legend next to figure
-col1, col2 = st.columns([3, 3])
-with col1:
-    st.plotly_chart(fig2, theme="streamlit")
-with col2:
-    st.plotly_chart(fig3, theme="streamlit")
+st.plotly_chart(fig2, theme="streamlit")
+
+st.plotly_chart(fig3, theme="streamlit")
 
 footer="Sources: Centers for Disease Control and Prevention (CDC), Global Health Data Exchange (GHDx), County Health Rankings and Roadmaps"
 st.markdown(footer)
