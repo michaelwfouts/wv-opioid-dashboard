@@ -30,41 +30,42 @@ fips = fipsDF.loc[:, 'FIPS'].tolist()
 
 # different color scales for different metrics
 colorDict = {
-    'Drug Arrests':         px.colors.sequential.Reds,
-    'Drug Mortality':       px.colors.sequential.Oranges,
-    'Illicit Drug Use':     px.colors.sequential.Greens,
+    'Drug Arrests (Per 1,000)':         px.colors.sequential.Reds,
+    'Drug Mortality (Per 100,000)':       px.colors.sequential.Oranges,
+    'Illicit Drug Use (Percent)':     px.colors.sequential.Greens,
     'Life Expectancy':      px.colors.sequential.Blues,
     'Population':           px.colors.sequential.Purples,
-    'Poverty Rates':        px.colors.sequential.Teal,
-    'Unemployment Rates':   px.colors.sequential.Greys
+    'Poverty Rates (Percent)':        px.colors.sequential.Teal,
+    'Unemployment Rates (Percent)':   px.colors.sequential.Greys,
+    'Opioid Dispensing Rate (Per 100)':         px.colors.sequential.Reds,
+    'Physician Ratio':       px.colors.sequential.Oranges,
+    'Fish, Farms, and Forest Labor (Employment per 1,000 Jobs)':     px.colors.sequential.Greens,
+    'Install, Maintenance, and Repair (Employment per 1,000 Jobs)':     px.colors.sequential.Oranges,
+    'Production Labor (Employment per 1,000 Jobs)':     px.colors.sequential.Blues,
+    'Construction and Extraction Labor (Employment per 1,000 Jobs)':     px.colors.sequential.Reds
 }
 
 # maps metric name to a file name
 fileDict = {
-    'Drug Arrests':         "data/WV Drug Epidemic Dataset.xlsx - Drug Arrests (Raw).csv",
-    'Drug Mortality':       "data/WV Drug Epidemic Dataset.xlsx - Drug Mortality (Per 100,000).csv",
-    'Illicit Drug Use':     "data/WV Drug Epidemic Dataset.xlsx - Illicit Drug Past Mo (Percent).csv",
+    'Poverty Rates (Percent)':        "data/WV Drug Epidemic Dataset.xlsx - Poverty Rates (Percent).csv",
+    'Drug Arrests (Per 1,000)':       "data/WV Drug Epidemic Dataset.xlsx - Drug Arrests (Per 1000).csv",
+    'Drug Mortality (Per 100,000)':       "data/WV Drug Epidemic Dataset.xlsx - Drug Mortality (Per 100,000).csv",
+    'Illicit Drug Use (Percent)':     "data/WV Drug Epidemic Dataset.xlsx - Illicit Drug Past Mo (Percent).csv",
     'Life Expectancy':      "data/WV Drug Epidemic Dataset.xlsx - Life Expectancy.csv",
     'Population':           "data/WV Drug Epidemic Dataset.xlsx - Population.csv",
-    'Poverty Rates':        "data/WV Drug Epidemic Dataset.xlsx - Poverty Rates (Percent).csv",
-    'Unemployment Rates':   "data/WV Drug Epidemic Dataset.xlsx - Unemployment Rates (Percent).csv"
-}
-
-yearsDict = {
-    'Drug Arrests':         ["1985", "2014"],
-    'Drug Mortality':       ["1980", "2021"],
-    'Illicit Drug Use':     ["2002", "2014"],
-    'Life Expectancy':      ["1980", "2022"],
-    'Population':           ["1970", "2022"],
-    'Poverty Rates':        "data/WV Drug Epidemic Dataset.xlsx - Poverty Rates (Percent).csv",
-    'Unemployment Rates':   "data/WV Drug Epidemic Dataset.xlsx - Unemployment Rates (Percent).csv"
+    'Unemployment Rates (Percent)':   "data/WV Drug Epidemic Dataset.xlsx - Unemployment Rates (Percent).csv",
+    'Opioid Dispensing Rate (Per 100)' : 'data\WV Drug Epidemic Dataset.xlsx - Opioid Dispensing Rate per 100.csv',
+    'Physician Ratio' : 'data\WV Drug Epidemic Dataset.xlsx - Physicians Ratio (people_1 primary care physican)_numeric.csv',
+    'Fish, Farms, and Forest Labor (Employment per 1,000 Jobs)':     'data\WV Drug Epidemic Dataset.xlsx - Employment per 1000 jobs - Farm&Fish&Forest.csv',
+    'Install, Maintenance, and Repair (Employment per 1,000 Jobs)':     'data\WV Drug Epidemic Dataset.xlsx - Employment per 1000 jobs - Install&Mainten&Repair.csv',
+    'Production Labor (Employment per 1,000 Jobs)':     'data\WV Drug Epidemic Dataset.xlsx - Employment per 1000 jobs - Production.csv',
+    'Construction and Extraction Labor (Employment per 1,000 Jobs)':     'data\WV Drug Epidemic Dataset.xlsx - Employment per 1000 jobs- Construction&Extraction .csv'
 }
 
 # select box for metric
 metric = st.selectbox(
     'Select metric to explore',
-    ('Drug Arrests', 'Drug Mortality', 'Life Expectancy',
-     'Population', 'Poverty Rates', 'Unemployment Rates'),
+    (fileDict.keys()),
      index=0
 )
 
@@ -74,8 +75,12 @@ df = df.iloc[np.arange(len(fips))]
 popDF = pd.read_csv(fileDict['Population'])
 years = df.columns[1:].sort_values(ascending=False).to_numpy()
 
+if metric in ['Fish, Farms, and Forest Labor (Employment per 1,000 Jobs)', 'Install, Maintenance, and Repair (Employment per 1,000 Jobs)', 'Production Labor (Employment per 1,000 Jobs)', 'Construction and Extraction Labor (Employment per 1,000 Jobs)']:
+    # If labor data, drop Area Column
+    df = df.drop('Area', axis=1)
+
 # get year data with slider
-year_to_filter = str(st.slider('Year', 2005, int(years.max()), int(years.max()))) # 2005 to max year
+year_to_filter = str(st.selectbox("Select a column", df.columns[1:].sort_values(ascending=False))) # 2005 to max year
 
 # Create overall dataframe
 df['County'] = df['County'].str.replace(' County', '', case=False)
@@ -89,6 +94,11 @@ if metric == 'Drug Arrests':
     popDF[year_to_filter] = popDF[year_to_filter].str.replace(',', '', case=False).astype(float)
     merged_df[year_to_filter] = df[year_to_filter]/popDF[year_to_filter] * 100000
 
+# To not make the legend incredibly long
+if metric in ['Fish, Farms, and Forest Labor (Employment per 1,000 Jobs)', 'Install, Maintenance, and Repair (Employment per 1,000 Jobs)', 'Production Labor (Employment per 1,000 Jobs)', 'Construction and Extraction Labor (Employment per 1,000 Jobs)']:
+    legend_metric = 'Employment Per 1,000'
+else: legend_metric = metric
+
 # create map figure
 fig = px.choropleth_mapbox(merged_df, 
                            geojson=counties, 
@@ -98,8 +108,12 @@ fig = px.choropleth_mapbox(merged_df,
                            center = {"lat": 38.7214, "lon": -80.6530}, zoom = 5,
                            opacity=0.75,
                            hover_name = df['County'].tolist(),
-                           labels={year_to_filter: metric},
+                           labels={year_to_filter: legend_metric},
                            mapbox_style="carto-positron")
+
+
+
+fig.update_layout(title_text=metric)
 
 st.plotly_chart(fig, theme="streamlit")
 

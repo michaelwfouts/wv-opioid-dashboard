@@ -4,7 +4,7 @@ import numpy as np
 import json
 import plotly.express as px
 import plotly.graph_objects as go
-from plotly.subplots import make_subplots
+# from plotly.subplots import make_subplots
 from urllib.request import urlopen
 
 # Set the page title
@@ -14,19 +14,10 @@ st.set_page_config(
     layout="centered",
 )
 
-# write a title
-st.write("# Opioid Dispensing Rate vs. Life Expectancy")
-
-# make a divider
+# Visualization Explaination
+st.write("# Drug Usage vs. Life Expectancy")
 st.markdown("""---""")
-
-# write a description
-st.write("This visualization compares the opiod dispensing rate in each county with the difference in the national life expectancy\
-          by using a bivariate choropleth map.")
-st.write("Bivariate choropleth maps measure two different metrics on the same map. Look at the legend to see what color correlates\
-          with which metric and how these colors can combine.")
-
-# make a divider
+st.write("While it can be hypothesized that the higher the life expectancy, the lower the opioid usage with the epidemic, this relationship needs to be explored in more detail.  These visualizations aim at looking at this from a geographical perspective to see if this is true.")
 st.markdown("""---""")
 
 # Load US counties information
@@ -168,12 +159,52 @@ with col1:
 with col2:
     st.plotly_chart(fig, theme="streamlit")
 
-#st.plotly_chart(fig, theme="streamlit")
-#st.plotly_chart(legend, theme="streamlit")
+# Linechart for how life expectancy has changed over time
 
-# Define the content of the page
-st.write("# Page Under Construction")
-st.write("This page is currently under construction. Please check back later for updates.")
+fig2 = px.line()
+
+fig2.add_scatter(x=lifeExptDF['Year'], y=lifeExptDF['Expectancy'], mode='lines', name='National Life Expectancy')
+
+# Add in specific data
+df = pd.read_csv("data/WV Drug Epidemic Dataset.xlsx - Life Expectancy.csv")
+df = df.iloc[np.arange(len(fips))]
+df['County'] = df['County'].str.replace(' County', '', case=False)
+WV_life = pd.DataFrame(df.drop(df.columns[0], axis=1).mean(axis=0))
+
+fig2.add_scatter(x=WV_life.index, y=WV_life[0], mode='lines', name='WV Life Expectancy')
+
+# Customize layout
+fig2.update_layout(title='Life Expectancy Comparison', 
+                   xaxis_title='Year', 
+                   yaxis_title='Life Expectancy')
+
+fig2.update_xaxes(range=[2000, 2023])
+
+# Show the plot
+# st.plotly_chart(fig2, theme="streamlit")
+
+# Dot Plot to explore relationship between counties
+drug_use_df = pd.read_csv('data/WV Drug Epidemic Dataset.xlsx - Opioid Dispensing Rate per 100.csv')
+drug_use_df['County'] = drug_use_df['County'].str.replace(' County', '', case=False)
+drug_use_df['County'] = drug_use_df['County'].str.replace(', WV', '', case=False)
+drug_use_df = drug_use_df[['County', year_to_filter]]
+df = df[['County', year_to_filter]]
+df = df.rename(columns={year_to_filter: 'Life Expectancy'})
+drug_use_df = drug_use_df.rename(columns={year_to_filter: 'Opioid Dispensing Rate'})
+merged_df = df.merge(drug_use_df, on='County', how='inner')
+
+# Create a dot plot with Plotly Express
+fig3 = px.scatter(merged_df, x='Opioid Dispensing Rate', y='Life Expectancy')
+
+# Customize layout
+fig3.update_layout(title='Opioid Dispensing Rate vs Life Expectancy', xaxis_title='Opioid Dispensing Rate', yaxis_title='Life Expectancy')
+
+# have legend next to figure
+col1, col2 = st.columns([3, 3])
+with col1:
+    st.plotly_chart(fig2, theme="streamlit")
+with col2:
+    st.plotly_chart(fig3, theme="streamlit")
 
 footer="Sources: Centers for Disease Control and Prevention (CDC), Global Health Data Exchange (GHDx), County Health Rankings and Roadmaps"
 st.markdown(footer)

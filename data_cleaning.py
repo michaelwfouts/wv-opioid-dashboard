@@ -1,6 +1,6 @@
 import pandas as pd
 
-def clean_csv_columns(csv_path):
+def clean_csv_columns(csv_path, new_csv_path):
     try:
         # Read the CSV file into a pandas DataFrame
         df = pd.read_csv(csv_path)
@@ -28,7 +28,7 @@ def clean_csv_columns(csv_path):
         df = df.dropna(how='all')
 
         # Write the cleaned DataFrame back to the CSV file
-        df.to_csv(csv_path, index=False)
+        df.to_csv(new_csv_path, index=False)
 
         print(f"Columns in '{csv_path}' have been cleaned successfully.")
     except Exception as e:
@@ -36,4 +36,5 @@ def clean_csv_columns(csv_path):
 
 # Example usage:
 # Replace 'your_file_path.csv' with the actual path to your CSV file
-clean_csv_columns('data\WV Drug Epidemic Dataset.xlsx - Illicit Drug Past Mo (Percent).csv')
+clean_csv_columns('data\WV Drug Epidemic Dataset.xlsx - Physicians Ratio (people_1 primary care physican).csv',
+                  'data\WV Drug Epidemic Dataset.xlsx - Physicians Ratio (people_1 primary care physican)_numeric.csv')

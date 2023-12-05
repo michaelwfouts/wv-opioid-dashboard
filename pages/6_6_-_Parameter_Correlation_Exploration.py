@@ -24,28 +24,31 @@ fips = load_fips('data/WV FIPS.csv')
 
 # maps metric name to a file name
 fileDict = {
-    'Drug Arrests':         "data/WV Drug Epidemic Dataset.xlsx - Drug Arrests (Raw).csv",
-    'Drug Mortality':       "data/WV Drug Epidemic Dataset.xlsx - Drug Mortality (Per 100,000).csv",
-    'Illicit Drug Use':     "data/WV Drug Epidemic Dataset.xlsx - Illicit Drug Past Mo (Percent).csv",
+    'Poverty Rates (Percent)':        "data/WV Drug Epidemic Dataset.xlsx - Poverty Rates (Percent).csv",
+    'Drug Arrests (Per 1,000)':       "data/WV Drug Epidemic Dataset.xlsx - Drug Arrests (Per 1000).csv",
+    'Drug Mortality (Per 100,000)':       "data/WV Drug Epidemic Dataset.xlsx - Drug Mortality (Per 100,000).csv",
+    'Illicit Drug Use (Percent)':     "data/WV Drug Epidemic Dataset.xlsx - Illicit Drug Past Mo (Percent).csv",
     'Life Expectancy':      "data/WV Drug Epidemic Dataset.xlsx - Life Expectancy.csv",
     'Population':           "data/WV Drug Epidemic Dataset.xlsx - Population.csv",
-    'Poverty Rates':        "data/WV Drug Epidemic Dataset.xlsx - Poverty Rates (Percent).csv",
-    'Unemployment Rates':   "data/WV Drug Epidemic Dataset.xlsx - Unemployment Rates (Percent).csv"
+    'Unemployment Rates (Percent)':   "data/WV Drug Epidemic Dataset.xlsx - Unemployment Rates (Percent).csv",
+    'Opioid Dispensing Rate (Per 100)' : 'data\WV Drug Epidemic Dataset.xlsx - Opioid Dispensing Rate per 100.csv',
+    'Physician Ratio' : 'data\WV Drug Epidemic Dataset.xlsx - Physicians Ratio (people_1 primary care physican)_numeric.csv',
+    'Manual Labor (Employment per 1,000 Jobs)' : 'data\WV Drug Epidemic Dataset.xlsx - Employment per 1000 jobs - (Overall).csv'
 }
 
 # Visualization Explaination
 st.write("# Parameter Correlation Exploration")
+st.markdown("""---""")
 st.write("This visualization compares county data for a given year and metric to produce a correlation metric.  This correlation metric shows how related the metrics are where correlation coefficients closer to +1 move in the same direction, coefficients closer to -1 move in opposite directions, and coefficients close to 0 are not correlated with eachother.")
 st.markdown("""---""")
 
 # Visualization Layout
 # The first row has two columns.  The first selects the metric of interest and the second selects the correlation method
-col1, col2 = st.columns([3, 1])
+col1, col2 = st.columns([1, 1])
 with col1:
     metric = st.selectbox(
         'Select metric to explore',
-        ('Drug Arrests', 'Drug Mortality', 'Illicit Drug Use', 'Life Expectancy',
-        'Population', 'Poverty Rates', 'Unemployment Rates'),
+        (fileDict.keys()),
         index=0
     )
 
