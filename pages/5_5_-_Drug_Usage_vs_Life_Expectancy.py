@@ -127,10 +127,7 @@ fig = px.choropleth_mapbox(merged_df,
                                                         'High Opioid, Low Life Expt', 'High Opioid, Med Life Expt', 'High Opioid, High Life Expt']},
                             opacity=1.0,
                             custom_data=['County', 
-                                        'Drug Use Cat', 
-                                        'Metric Rate Cat', 
-                                        year_to_filter + 'Metric',
-                                        year_to_filter + 'Drug Use'])
+                                year_to_filter,] )
 # removes the legend
 #fig.update_traces(showlegend=False)
 fig.update_layout(width=550)
