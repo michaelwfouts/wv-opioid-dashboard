@@ -6,7 +6,7 @@ import plotly.express as px
 from urllib.request import urlopen
 
 st.set_page_config(
-    page_title="Exploration Map",
+    page_title="Further Exploration Map",
     page_icon="🗺️",
 )
 

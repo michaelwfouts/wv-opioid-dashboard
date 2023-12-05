@@ -7,7 +7,7 @@ from scipy.stats import spearmanr
 
 # Set the page title
 st.set_page_config(
-    page_title="Correlation Exploration",
+    page_title=" Parameter Correlation Exploration",
     page_icon="📊",
     layout="centered",
 )
