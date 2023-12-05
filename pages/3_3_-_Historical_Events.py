@@ -76,7 +76,9 @@ if metric in ['Population']:
     # Convert the sum row to a DataFrame and transpose it to make it a single row
     plot_df = pd.DataFrame(plot_row)
 else:
-    plot_row = df.drop(df.columns[0], axis=1).mean(axis=0)
+    plot_row = df.drop(df.columns[0], axis=1)
+    plot_row = plot_row.apply(pd.to_numeric, errors='coerce')
+    plot_row = plot_row.mean(axis=0)
     # Convert the sum row to a DataFrame and transpose it to make it a single row
     plot_df = pd.DataFrame(plot_row)
 

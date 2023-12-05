@@ -40,7 +40,7 @@ lifeExptDF = pd.read_csv("data/National Average Lifespan.csv")
 # get year data with slider
 year_to_filter = str(st.slider('Year', 2006, 2020, 2020))    # 2006 to 2020 for now
 
-st.write("Choropleth maps may take some time to load.")
+# st.write("Choropleth maps may take some time to load.")
 
 # Create overall dataframes
 df['County'] = df['County'].str.replace(' County', '', case=False)
@@ -92,6 +92,18 @@ for i in range(len(fips)):
             ranges.append("High Opioid, High Life Expt")
 merged_df["values"] = ranges
 
+merged_df = merged_df[['County', year_to_filter, 'values', 'FIPS']]
+merged_df = merged_df.rename(columns={year_to_filter: year_to_filter + 'Metric'})
+
+drug_use_df = merged_df2[['County', year_to_filter]]
+df['County'] = df['County'].str.replace(' County', '', case=False)
+drug_use_df = drug_use_df.rename(columns={year_to_filter: year_to_filter + 'Drug Use'})
+
+drug_use_df['County'] = drug_use_df['County'].str.replace(' County', '', case=False)
+drug_use_df['County'] = drug_use_df['County'].str.replace(', WV', '', case=False)
+
+merged_df = merged_df.merge(drug_use_df, on='County', how='inner')
+
 # blue = FFFFFF 8888FF 0000FF
 # red =  FFFFFF FF8888 FF0000
 # average colors together
@@ -120,10 +132,22 @@ fig = px.choropleth_mapbox(merged_df,
                                                         'High Opioid, Low Life Expt', 'High Opioid, Med Life Expt', 'High Opioid, High Life Expt']},
                             opacity=1.0,
                             custom_data=['County', 
-                                year_to_filter,] )
+                                         year_to_filter + 'Metric',
+                                         year_to_filter + 'Drug Use',
+                                         'values'] )
 # removes the legend
 #fig.update_traces(showlegend=False)
 fig.update_layout(width=550)
+
+fig.update_traces(hovertemplate='County: %{customdata[0]}<br><br>' + 
+                                'Metrics: %{customdata[3]}<br>' + 
+                                'Opioid Dispensing Rate per 100: %{customdata[2]:.1f}<br>' +
+                                'Life Expectancy: %{customdata[1]:.1f}')
+fig.update_layout(
+    hoverlabel=dict(
+        align="left"
+    )
+)
 
 # create the legend
 legend = go.Heatmap(
