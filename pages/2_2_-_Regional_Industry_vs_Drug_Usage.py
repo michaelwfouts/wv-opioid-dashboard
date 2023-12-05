@@ -230,8 +230,26 @@ for iCounty in range(55):
         data_drug_usage_level[iCounty] = 'High'
         data_bivariate[iCounty] = 'High Opioid Dispensing, High Employment'
 
-    elif np.isnan(data_employ[iCounty]):
+    # if employment is not available and drug usage is low
+    elif np.isnan(data_employ[iCounty]) and (drug_usage_range_low[0] <= data_drug_usage[iCounty] < drug_usage_range_low[1]):
+        data_employ_level[iCounty] = 'Not Available'
+        data_drug_usage_level[iCounty] = 'Low'
         data_bivariate[iCounty] = 'Data Not Available'
+        data_employ[iCounty] = 'na';
+
+    # if employment is not available and drug usage is medium
+    elif np.isnan(data_employ[iCounty]) and (drug_usage_range_med[0] <= data_drug_usage[iCounty] < drug_usage_range_med[1]):
+        data_employ_level[iCounty] = 'Not Available'
+        data_drug_usage_level[iCounty] = 'Medium'
+        data_bivariate[iCounty] = 'Data Not Available'
+        data_employ[iCounty] = 'na';
+
+    # if employment is not available and drug usage is high
+    elif np.isnan(data_employ[iCounty]) and (drug_usage_range_high[0] <= data_drug_usage[iCounty] < drug_usage_range_high[1]):
+        data_employ_level[iCounty] = 'Not Available'
+        data_drug_usage_level[iCounty] = 'High'
+        data_bivariate[iCounty] = 'Data Not Available'
+        data_employ[iCounty] = 'na';
 
     else:
         data_bivariate[iCounty] = 'Needs Fixed'
@@ -303,9 +321,11 @@ fig = px.choropleth_mapbox(
                  'drug_usage_level']
 )
 
+
+# update the data displayed when hovering over a county
 fig.update_traces(hovertemplate='%{customdata[0]}<br><br>' + 
-                                'Opioid Dispensing Rate Per 100 People: %{customdata[3]:.1f} (%{customdata[4]})<br>' +
-                                'Employment per 1000 Jobs: %{customdata[1]:.1f} (%{customdata[2]})<br>')
+                                'Opioid Dispensing Rate Per 100 People: %{customdata[3]} (%{customdata[4]})<br>' +
+                                'Employment per 1000 Jobs: %{customdata[1]} (%{customdata[2]})<br>')
 
 fig.update_layout(
     hoverlabel=dict(
@@ -322,7 +342,7 @@ legend = go.Heatmap(
     colorscale=LegendColorDict["Employment"],
 )
 
-# Create a layout with a color axis for the legend
+# create a layout with a color axis for the legend
 layout = go.Layout(
     title="Legend",
     height=300,
@@ -349,7 +369,6 @@ with col1:
 with col2:
     st.plotly_chart(fig, theme="streamlit")
 
-
-
+# add footer info
 footer="Sources: Centers for Disease Control and Prevention (CDC), US Bureau of Labor Statistics, The Washington Post"
 st.markdown(footer)
