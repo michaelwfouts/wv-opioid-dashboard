@@ -35,20 +35,20 @@ drug_use_df['County'] = drug_use_df['County'].str.replace(', WV', '', case=False
 
 # maps metric name to a file name
 fileDict = {
-    'Drug Arrests':         "data/WV Drug Epidemic Dataset.xlsx - Drug Arrests (Raw).csv",
+    'Drug Arrests':         "data/WV Drug Epidemic Dataset.xlsx - Drug Arrests (Per 1000).csv",
     'Poverty Rates':        "data/WV Drug Epidemic Dataset.xlsx - Poverty Rates (Percent).csv",
     'Unemployment Rates':   "data/WV Drug Epidemic Dataset.xlsx - Unemployment Rates (Percent).csv"
 }
 
 yearsDict = {
-    'Drug Arrests':         ["1985", "2014"],
+    'Drug Arrests':         ["1985", "2019"],
     'Poverty Rates':        ["1997", "2022"],
     'Unemployment Rates':   ["1990", "2022"]
 }
 
 # select box for metric
 metric = st.selectbox(
-    'Select metric to explore',
+    'Select metric to explore:',
     ('Drug Arrests', 'Poverty Rates', 'Unemployment Rates'),
      index=0
 )
@@ -205,74 +205,77 @@ color_scale = [
     'rgb(128,0,0)'  # Low Metric1, High Metric2
 ]
 
-# Create choropleth map
-fig = px.choropleth_mapbox(
-    final_df,
-    geojson=counties,
-    locations='FIPS',
-    color='Bivariate',
-    #color_continuous_scale=color_scale,
-    color_discrete_map=ChoroColorDict[metric],
-    center = {"lat": 38.7214, "lon": -80.6530}, zoom = 5,
-    opacity=1.0,
-    # hover_name = final_df['County'].tolist(),
-    # labels={year_to_filter: metric},
-    category_orders={'Bivariate': categoryOrderDict[metric]},
-    mapbox_style="carto-positron",
-    title='Opiod Dispensing vs. ' + metric,
-    custom_data=['County', 
-                 'Drug Use Cat', 
-                 'Metric Rate Cat', 
-                 year_to_filter + 'Metric',
-                 year_to_filter + 'Drug Use']
-)
+# Display loading bar
+with st.spinner("Loading..."):
 
-
-fig.update_traces(hovertemplate='County: %{customdata[0]}<br><br>' + 
-                                'Opioid Dispensing: %{customdata[4]:.1f} (%{customdata[1]})<br>' +
-                                 metric + ': %{customdata[3]:.1f} (%{customdata[2]})')
-fig.update_layout(width=550)
-fig.update_layout(
-    hoverlabel=dict(
-        align="left"
+    # Run the time-consuming task
+    # Create choropleth map
+    fig = px.choropleth_mapbox(
+        final_df,
+        geojson=counties,
+        locations='FIPS',
+        color='Bivariate',
+        #color_continuous_scale=color_scale,
+        color_discrete_map=ChoroColorDict[metric],
+        center = {"lat": 38.7214, "lon": -80.6530}, zoom = 5,
+        opacity=1.0,
+        # hover_name = final_df['County'].tolist(),
+        # labels={year_to_filter: metric},
+        category_orders={'Bivariate': categoryOrderDict[metric]},
+        mapbox_style="carto-positron",
+        title='Opiod Dispensing vs. ' + metric,
+        custom_data=['County', 
+                    'Drug Use Cat', 
+                    'Metric Rate Cat', 
+                    year_to_filter + 'Metric',
+                    year_to_filter + 'Drug Use']
     )
-)
 
-# create the legend
-legend = go.Heatmap(
-    z=[[0.0, 0.125, 0.25], [0.375, 0.5, 0.625], [0.75, 0.875, 1.0]],
-    x=["low", "medium", "high"],
-    y=["low", "medium", "high"],
-    showscale=False,
-    colorscale=LegendColorDict[metric],
-)
-
-# Create a layout with a color axis for the legend
-layout = go.Layout(
-    title="Legend",
-    height=300,
-    width=270,
-    xaxis=dict(title=metric),
-    yaxis=dict(title="Opioid Dispensing Rate"),
-    hovermode=False,
-    coloraxis=dict(
-        cmin=1,  # Set the minimum value
-        cmax=9,  # Set the maximum value
-        colorbar=dict(title="Legend Title")
+    fig.update_traces(hovertemplate='County: %{customdata[0]}<br><br>' + 
+                                    'Opioid Dispensing: %{customdata[4]:.1f} (%{customdata[1]})<br>' +
+                                    metric + ': %{customdata[3]:.1f} (%{customdata[2]})')
+    fig.update_layout(width=550)
+    fig.update_layout(
+        hoverlabel=dict(
+            align="left"
+        )
     )
-)
-legend = go.Figure(data=[legend], layout=layout)
-legend.update_traces(showlegend=False)
-legend.update_xaxes(fixedrange=True)
-legend.update_yaxes(fixedrange=True)
-legend.update_layout(title_text='Legend', title_x=0.5)
 
-# have legend next to figure
-col1, col2 = st.columns([3, 4])
-with col1:
-    st.plotly_chart(legend, theme="streamlit")
-with col2:
-    st.plotly_chart(fig, theme="streamlit")
+    # create the legend
+    legend = go.Heatmap(
+        z=[[0.0, 0.125, 0.25], [0.375, 0.5, 0.625], [0.75, 0.875, 1.0]],
+        x=["low", "medium", "high"],
+        y=["low", "medium", "high"],
+        showscale=False,
+        colorscale=LegendColorDict[metric],
+    )
+
+    # Create a layout with a color axis for the legend
+    layout = go.Layout(
+        title="Legend",
+        height=300,
+        width=270,
+        xaxis=dict(title=metric),
+        yaxis=dict(title="Opioid Dispensing Rate"),
+        hovermode=False,
+        coloraxis=dict(
+            cmin=1,  # Set the minimum value
+            cmax=9,  # Set the maximum value
+            colorbar=dict(title="Legend Title")
+        )
+    )
+    legend = go.Figure(data=[legend], layout=layout)
+    legend.update_traces(showlegend=False)
+    legend.update_xaxes(fixedrange=True)
+    legend.update_yaxes(fixedrange=True)
+    legend.update_layout(title_text='Legend', title_x=0.5)
+
+    # have legend next to figure
+    col1, col2 = st.columns([3, 4])
+    with col1:
+        st.plotly_chart(legend, theme="streamlit")
+    with col2:
+        st.plotly_chart(fig, theme="streamlit")
 
 # fig.update_layout(legend_title_text='Combined Categorical Metrics')
 

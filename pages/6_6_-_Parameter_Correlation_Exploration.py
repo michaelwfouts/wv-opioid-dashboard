@@ -47,14 +47,14 @@ st.markdown("""---""")
 col1, col2 = st.columns([1, 1])
 with col1:
     metric = st.selectbox(
-        'Select metric to explore',
+        'Select metric to explore:',
         (fileDict.keys()),
         index=0
     )
 
 with col2:
     correlation_selection = st.radio(
-    "Select Correlation Type",
+    "Select Correlation Type:",
     ["**Pearson**", "**Spearman**"],
     captions = ["Linear Relationships", "Mix of Linear and Non-Linear Relationships"])
 

@@ -45,7 +45,7 @@ st.write("This visualization takes an event perspective to the opioid epidemic, 
 st.markdown("""---""")
 
 metric = st.selectbox(
-    'Select metric to explore',
+    'Select metric to explore:',
     (fileDict.keys()),
      index=0
 )
@@ -62,7 +62,7 @@ if metric in ['Fish, Farms, and Forest Labor (Employment per 1,000 Jobs)', 'Inst
 df_timeline = pd.read_csv('data/WV Drug Epidemic Dataset.xlsx - Timeline.csv')
 
 source_filter = st.multiselect(
-    'Select the Sources You Would Like',
+    'Filter Sources:',
     df_timeline['Source (Short)'].unique().tolist())
 
 if source_filter: # if source_filter is not blank

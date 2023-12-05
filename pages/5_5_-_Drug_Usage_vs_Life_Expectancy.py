@@ -117,73 +117,75 @@ custom_color_scale = [
     [0.75, '#FF7F7F'], [0.875, '#C3447F'], [1.0, '#7F007F']
 ]
 
-fig = px.choropleth_mapbox(merged_df,
-                            geojson=counties,  # You can provide your own GeoJSON file or use px.data.gapminder()
-                            locations='FIPS',
-                            color='values',
-                            color_discrete_map=biColor,
-                            hover_name=df['County'].tolist(),
-                            center = {"lat": 38.7214, "lon": -80.6530}, zoom = 5,
-                            mapbox_style="carto-positron",
-                            title='Opiod Dispensing Rate vs Life Expectancy',
-                            labels={'Variable1': 'Variable 1', "Legend": " "},
-                            category_orders={'values': ['Low Opioid, Low Life Expt', 'Low Opioid, Med Life Expt', 'Low Opioid, High Life Expt', 
-                                                        'Med Opioid, Low Life Expt', 'Med Opioid, Med Life Expt', 'Med Opioid, High Life Expt', 
-                                                        'High Opioid, Low Life Expt', 'High Opioid, Med Life Expt', 'High Opioid, High Life Expt']},
-                            opacity=1.0,
-                            custom_data=['County', 
-                                         year_to_filter + 'Metric',
-                                         year_to_filter + 'Drug Use',
-                                         'values'] )
-# removes the legend
-#fig.update_traces(showlegend=False)
-fig.update_layout(width=550)
+# Display loading bar
+with st.spinner("Loading..."):
+    fig = px.choropleth_mapbox(merged_df,
+                                geojson=counties,  # You can provide your own GeoJSON file or use px.data.gapminder()
+                                locations='FIPS',
+                                color='values',
+                                color_discrete_map=biColor,
+                                hover_name=df['County'].tolist(),
+                                center = {"lat": 38.7214, "lon": -80.6530}, zoom = 5,
+                                mapbox_style="carto-positron",
+                                title='Opiod Dispensing Rate vs Life Expectancy',
+                                labels={'Variable1': 'Variable 1', "Legend": " "},
+                                category_orders={'values': ['Low Opioid, Low Life Expt', 'Low Opioid, Med Life Expt', 'Low Opioid, High Life Expt', 
+                                                            'Med Opioid, Low Life Expt', 'Med Opioid, Med Life Expt', 'Med Opioid, High Life Expt', 
+                                                            'High Opioid, Low Life Expt', 'High Opioid, Med Life Expt', 'High Opioid, High Life Expt']},
+                                opacity=1.0,
+                                custom_data=['County', 
+                                            year_to_filter + 'Metric',
+                                            year_to_filter + 'Drug Use',
+                                            'values'] )
+    # removes the legend
+    #fig.update_traces(showlegend=False)
+    fig.update_layout(width=550)
 
-fig.update_traces(hovertemplate='County: %{customdata[0]}<br><br>' + 
-                                'Metrics: %{customdata[3]}<br>' + 
-                                'Opioid Dispensing Rate per 100: %{customdata[2]:.1f}<br>' +
-                                'Life Expectancy: %{customdata[1]:.1f}')
-fig.update_layout(
-    hoverlabel=dict(
-        align="left"
+    fig.update_traces(hovertemplate='County: %{customdata[0]}<br><br>' + 
+                                    'Metrics: %{customdata[3]}<br>' + 
+                                    'Opioid Dispensing Rate per 100: %{customdata[2]:.1f}<br>' +
+                                    'Life Expectancy: %{customdata[1]:.1f}')
+    fig.update_layout(
+        hoverlabel=dict(
+            align="left"
+        )
     )
-)
 
-# create the legend
-legend = go.Heatmap(
-    z=[[0.0, 0.125, 0.25], [0.375, 0.5, 0.625], [0.75, 0.875, 1.0]],
-    x=["low", "medium", "high"],
-    y=["low", "medium", "high"],
-    showscale=False,
-    colorscale=custom_color_scale,
-)
-
-# Create a layout with a color axis for the legend
-layout = go.Layout(
-    title="Legend",
-    height=300,
-    width=270,
-    xaxis=dict(title="Life Expectancy"),
-    yaxis=dict(title="Opioid Dispensing Rate"),
-    hovermode=False,
-    coloraxis=dict(
-        cmin=1,  # Set the minimum value
-        cmax=9,  # Set the maximum value
-        colorbar=dict(title="Legend Title")
+    # create the legend
+    legend = go.Heatmap(
+        z=[[0.0, 0.125, 0.25], [0.375, 0.5, 0.625], [0.75, 0.875, 1.0]],
+        x=["low", "medium", "high"],
+        y=["low", "medium", "high"],
+        showscale=False,
+        colorscale=custom_color_scale,
     )
-)
-legend = go.Figure(data=[legend], layout=layout)
-legend.update_traces(showlegend=False)
-legend.update_xaxes(fixedrange=True)
-legend.update_yaxes(fixedrange=True)
-legend.update_layout(title_text='Legend', title_x=0.5)
 
-# have legend next to figure
-col1, col2 = st.columns([3, 4])
-with col1:
-    st.plotly_chart(legend, theme="streamlit")
-with col2:
-    st.plotly_chart(fig, theme="streamlit")
+    # Create a layout with a color axis for the legend
+    layout = go.Layout(
+        title="Legend",
+        height=300,
+        width=270,
+        xaxis=dict(title="Life Expectancy"),
+        yaxis=dict(title="Opioid Dispensing Rate"),
+        hovermode=False,
+        coloraxis=dict(
+            cmin=1,  # Set the minimum value
+            cmax=9,  # Set the maximum value
+            colorbar=dict(title="Legend Title")
+        )
+    )
+    legend = go.Figure(data=[legend], layout=layout)
+    legend.update_traces(showlegend=False)
+    legend.update_xaxes(fixedrange=True)
+    legend.update_yaxes(fixedrange=True)
+    legend.update_layout(title_text='Legend', title_x=0.5)
+
+    # have legend next to figure
+    col1, col2 = st.columns([3, 4])
+    with col1:
+        st.plotly_chart(legend, theme="streamlit")
+    with col2:
+        st.plotly_chart(fig, theme="streamlit")
 
 # Linechart for how life expectancy has changed over time
 

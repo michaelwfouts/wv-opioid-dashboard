@@ -64,7 +64,7 @@ fileDict = {
 
 # select box for metric
 metric = st.selectbox(
-    'Select metric to explore',
+    'Select metric to explore:',
     (fileDict.keys()),
      index=0
 )
@@ -80,7 +80,7 @@ if metric in ['Fish, Farms, and Forest Labor (Employment per 1,000 Jobs)', 'Inst
     df = df.drop('Area', axis=1)
 
 # get year data with slider
-year_to_filter = str(st.selectbox("Select a column", df.columns[1:].sort_values(ascending=False))) # 2005 to max year
+year_to_filter = str(st.selectbox("Select Year:", df.columns[1:].sort_values(ascending=False))) # 2005 to max year
 
 # Create overall dataframe
 df['County'] = df['County'].str.replace(' County', '', case=False)
@@ -89,10 +89,10 @@ df[year_to_filter] = df[year_to_filter].str.replace(',', '', case=False).astype(
 merged_df = df.merge(fipsDF, on='County', how='inner')
 
 # per capita info
-if metric == 'Drug Arrests':
-    popDF = popDF.astype(str)
-    popDF[year_to_filter] = popDF[year_to_filter].str.replace(',', '', case=False).astype(float)
-    merged_df[year_to_filter] = df[year_to_filter]/popDF[year_to_filter] * 100000
+# if metric == 'Drug Arrests':
+#     popDF = popDF.astype(str)
+#     popDF[year_to_filter] = popDF[year_to_filter].str.replace(',', '', case=False).astype(float)
+#     merged_df[year_to_filter] = df[year_to_filter]/popDF[year_to_filter] * 100000
 
 # To not make the legend incredibly long
 if metric in ['Fish, Farms, and Forest Labor (Employment per 1,000 Jobs)', 'Install, Maintenance, and Repair (Employment per 1,000 Jobs)', 'Production Labor (Employment per 1,000 Jobs)', 'Construction and Extraction Labor (Employment per 1,000 Jobs)']:
@@ -109,9 +109,12 @@ fig = px.choropleth_mapbox(merged_df,
                            opacity=0.75,
                            hover_name = df['County'].tolist(),
                            labels={year_to_filter: legend_metric},
-                           mapbox_style="carto-positron")
+                           mapbox_style="carto-positron",
+                           custom_data=['County',
+                                        year_to_filter])
 
-
+fig.update_traces(hovertemplate='County: %{customdata[0]}<br><br>' + 
+                                metric + ': %{customdata[1]:.2f}')
 
 fig.update_layout(title_text=metric)
 
