@@ -86,7 +86,9 @@ year_to_filter = str(st.selectbox("Select Year:", df.columns[1:].sort_values(asc
 df['County'] = df['County'].str.replace(' County', '', case=False)
 df[year_to_filter] = df[year_to_filter].astype(str)
 df[year_to_filter] = df[year_to_filter].str.replace(',', '', case=False).astype(float)
-merged_df = df.merge(fipsDF, on='County', how='inner')
+# merged_df = df.merge(fipsDF, on='County', how='inner')
+merged_df = df
+merged_df['FIPS'] = fips
 
 # per capita info
 # if metric == 'Drug Arrests':
