@@ -16,7 +16,7 @@ st.set_page_config(
 # Visualization Explaination
 st.write("# Drug Usage vs Socioeconomic Factors")
 st.markdown("""---""")
-st.write("Drug usage is a complex topic spanning multiple factor.  Due to the nature of its complexity, this visualization looks at the relationship between socioeconomic features (arrests, poverty, and unemployment) to see what relationships between each from a geographical perspective meant to explore the difference in areas between Northern and Southern West Virginia.")
+st.write("Drug usage is a complex topic spanning multiple factors.  Due to the nature of its complexity, this visualization looks at the relationship between socioeconomic features (arrests, poverty, and unemployment) to see what relationships between each from a geographical perspective meant to explore the difference in areas between Northern and Southern West Virginia.")
 st.markdown("""---""")
 
 # Load US counties information
