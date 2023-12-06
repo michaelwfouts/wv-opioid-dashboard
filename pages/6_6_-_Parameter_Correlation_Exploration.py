@@ -61,7 +61,7 @@ with col2:
 # Load Data for Selected Metric
 df = pd.read_csv(fileDict[metric])
 # Some data has blank values at the end; so hard cut off after 55 rows
-df = df.iloc[np.arange(len(fips))]
+df = df.iloc[np.arange(len(fips))].astype(float)
 
 # Use Slider to Select Year
 year_to_filter = st.selectbox(
@@ -80,7 +80,7 @@ if correlation_selection == '**Pearson**':
     # For each dataset possible
     for value in fileDict:
         # Load in the dataset for comparison
-        df_test = pd.read_csv(fileDict[value]).iloc[np.arange(len(fips))]
+        df_test = pd.read_csv(fileDict[value]).iloc[np.arange(len(fips))].astype(float)
         # Only apply to years where both datasets have values
         if year_to_filter in df_test:
             # Some counties have missing data.  Identify those indexes for the year given if applicable.
