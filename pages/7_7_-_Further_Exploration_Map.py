@@ -85,7 +85,9 @@ year_to_filter = str(st.selectbox("Select Year:", df.columns[1:].sort_values(asc
 # Create overall dataframe
 df['County'] = df['County'].str.replace(' County', '', case=False)
 df['County'] = df['County'].str.replace(', WV', '', case=False) # For Opioid Data Set
+df = df[['County', year_to_filter]]
 df[year_to_filter] = df[year_to_filter].astype(str)
+df = df[df[year_to_filter] != 'na']
 df[year_to_filter] = df[year_to_filter].str.replace(',', '', case=False).astype(float)
 merged_df = df.merge(fipsDF, on='County', how='inner')
 # merged_df = df
@@ -101,6 +103,10 @@ merged_df = df.merge(fipsDF, on='County', how='inner')
 if metric in ['Fish, Farms, and Forest Labor (Employment per 1,000 Jobs)', 'Install, Maintenance, and Repair (Employment per 1,000 Jobs)', 'Production Labor (Employment per 1,000 Jobs)', 'Construction and Extraction Labor (Employment per 1,000 Jobs)']:
     legend_metric = 'Employment Per 1,000'
 else: legend_metric = metric
+
+# if metric == 'Fish, Farms, and Forest Labor (Employment per 1,000 Jobs)':
+#     # Replace 'na' with blank (empty string)
+#     merged_df['year_to_filter'] = merged_df['year_to_filter'].replace('na', '').astype(float)
 
 # create map figure
 fig = px.choropleth_mapbox(merged_df, 
