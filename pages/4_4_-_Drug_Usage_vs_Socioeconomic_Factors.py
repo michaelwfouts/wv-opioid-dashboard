@@ -41,9 +41,9 @@ fileDict = {
 }
 
 yearsDict = {
-    'Drug Arrests':         ["1985", "2019"],
-    'Poverty Rates':        ["1997", "2022"],
-    'Unemployment Rates':   ["1990", "2022"]
+    'Drug Arrests (Per 1000)':         ["1985", "2019"],
+    'Poverty Rates (Percent)':        ["1997", "2022"],
+    'Unemployment Rates (Percent)':   ["1990", "2022"]
 }
 
 # select box for metric
@@ -125,9 +125,9 @@ replacement_dict_drug_use = {1: 'Low Opioid', 2: 'Med Opioid', 3: 'High Opioid'}
 replacement_dict_Arrests =      {1: 'Low Arrests', 2: 'Med Arrests', 3: 'High Arrests'}
 replacement_dict_Poverty =      {1: 'Low Poverty', 2: 'Med Poverty', 3: 'High Poverty'}
 replacement_dict_Unemployment = {1: 'Low Unemployment', 2: 'Med Unemployment', 3: 'High Unemployment'}
-replacement_dict_metric = {"Drug Arrests": replacement_dict_Arrests,
-                           "Poverty Rates": replacement_dict_Poverty,
-                           "Unemployment Rates": replacement_dict_Unemployment}
+replacement_dict_metric = {"Drug Arrests (Per 1000)": replacement_dict_Arrests,
+                           "Poverty Rates (Percent)": replacement_dict_Poverty,
+                           "Unemployment Rates (Percent)": replacement_dict_Unemployment}
 
 # Replace values in the specified column
 drug_use_df['Drug Use Cat'] = drug_use_df['Drug Use Cat'].replace(replacement_dict_drug_use)
@@ -176,20 +176,20 @@ Legend_Unemployment_Color = [
     [0.75, '#7F7F7F'], [0.875, '#44447F'], [1.0, '#00007F']
 ]
 
-ChoroColorDict = {"Drug Arrests": biColorDrugArrests,
-                   "Poverty Rates": biColorPoverty,
-                   "Unemployment Rates": biColorUnemployment}
-LegendColorDict = {"Drug Arrests": Legend_DrugArrests_Color,
-                   "Poverty Rates": Legend_Poverty_Color,
-                   "Unemployment Rates": Legend_Unemployment_Color}
+ChoroColorDict = {"Drug Arrests (Per 1000)": biColorDrugArrests,
+                   "Poverty Rates (Percent)": biColorPoverty,
+                   "Unemployment Rates (Percent)": biColorUnemployment}
+LegendColorDict = {"Drug Arrests (Per 1000)": Legend_DrugArrests_Color,
+                   "Poverty Rates (Percent)": Legend_Poverty_Color,
+                   "Unemployment Rates (Percent)": Legend_Unemployment_Color}
 
-categoryOrderDict = {"Drug Arrests": ['Low Opioid, Low Arrests', 'Low Opioid, Med Arrests', 'Low Opioid, High Arrests', 
+categoryOrderDict = {"Drug Arrests (Per 1000)": ['Low Opioid, Low Arrests', 'Low Opioid, Med Arrests', 'Low Opioid, High Arrests', 
                                       'Med Opioid, Low Arrests', 'Med Opioid, Med Arrests', 'Med Opioid, High Arrests', 
                                       'High Opioid, Low Arrests', 'High Opioid, Med Arrests', 'High Opioid, High Arrests'],
-                     "Poverty Rates": ['Low Opioid, Low Poverty', 'Low Opioid, Med Poverty', 'Low Opioid, High Poverty', 
+                     "Poverty Rates (Percent)": ['Low Opioid, Low Poverty', 'Low Opioid, Med Poverty', 'Low Opioid, High Poverty', 
                                        'Med Opioid, Low Poverty', 'Med Opioid, Med Poverty', 'Med Opioid, High Poverty', 
                                        'High Opioid, Low Poverty', 'High Opioid, Med Poverty', 'High Opioid, High Poverty'],
-                     "Unemployment Rates": ['Low Opioid, Low Unemployment', 'Low Opioid, Med Unemployment', 'Low Opioid, High Unemployment', 
+                     "Unemployment Rates (Percent)": ['Low Opioid, Low Unemployment', 'Low Opioid, Med Unemployment', 'Low Opioid, High Unemployment', 
                                        'Med Opioid, Low Unemployment', 'Med Opioid, Med Unemployment', 'Med Opioid, High Unemployment', 
                                        'High Opioid, Low Unemployment', 'High Opioid, Med Unemployment', 'High Opioid, High Unemployment']}
 
