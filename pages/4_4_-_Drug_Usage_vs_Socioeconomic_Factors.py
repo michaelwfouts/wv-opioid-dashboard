@@ -35,9 +35,9 @@ drug_use_df['County'] = drug_use_df['County'].str.replace(', WV', '', case=False
 
 # maps metric name to a file name
 fileDict = {
-    'Drug Arrests':         "data/WV Drug Epidemic Dataset.xlsx - Drug Arrests (Per 1000).csv",
-    'Poverty Rates':        "data/WV Drug Epidemic Dataset.xlsx - Poverty Rates (Percent).csv",
-    'Unemployment Rates':   "data/WV Drug Epidemic Dataset.xlsx - Unemployment Rates (Percent).csv"
+    'Drug Arrests (Per 1000)':         "data/WV Drug Epidemic Dataset.xlsx - Drug Arrests (Per 1000).csv",
+    'Poverty Rates (Percent)':        "data/WV Drug Epidemic Dataset.xlsx - Poverty Rates (Percent).csv",
+    'Unemployment Rates (Percent)':   "data/WV Drug Epidemic Dataset.xlsx - Unemployment Rates (Percent).csv"
 }
 
 yearsDict = {
@@ -49,7 +49,7 @@ yearsDict = {
 # select box for metric
 metric = st.selectbox(
     'Select metric to explore:',
-    ('Drug Arrests', 'Poverty Rates', 'Unemployment Rates'),
+    ('Drug Arrests (Per 1000)', 'Poverty Rates (Percent)', 'Unemployment Rates (Percent)'),
      index=0
 )
 
@@ -72,12 +72,12 @@ df['County'] = df['County'].str.replace(' County', '', case=False)
 # Add FIPS
 merged_df = df.merge(fipsDF, on='County', how='inner')
 
-# per capita info
-if metric == 'Drug Arrests':
-    popDF = pd.read_csv('data/WV Drug Epidemic Dataset.xlsx - Population.csv')
-    # popDF = popDF.astype(str)
-    # popDF[year_to_filter] = popDF[year_to_filter].str.replace(',', '', case=False).astype(float)
-    merged_df[year_to_filter] = df[year_to_filter]/popDF[year_to_filter] * 100000 # Per 100,000 Transformation
+# # per capita info
+# if metric == 'Drug Arrests':
+#     popDF = pd.read_csv('data/WV Drug Epidemic Dataset.xlsx - Population.csv')
+#     # popDF = popDF.astype(str)
+#     # popDF[year_to_filter] = popDF[year_to_filter].str.replace(',', '', case=False).astype(float)
+#     merged_df[year_to_filter] = df[year_to_filter]/popDF[year_to_filter] * 100000 # Per 100,000 Transformation
 
 # Function to categorize values into thirds (High, Medium, Low)
 def categorize_thirds(value):
@@ -91,6 +91,7 @@ def categorize_thirds(value):
 # Filter to just County columns and just needed year
 merged_df = merged_df[['County',year_to_filter,'FIPS']]
 drug_use_df = drug_use_df[['County',year_to_filter]]
+merged_df[year_to_filter] = merged_df[year_to_filter].astype(float)
 
 # Create High, Med, Low Category for each
 # merged_df
