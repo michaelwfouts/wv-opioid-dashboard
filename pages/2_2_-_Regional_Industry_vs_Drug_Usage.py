@@ -41,7 +41,7 @@ st.write("Which year and industry are you interested in?")
 # make a dropdown menu to select year
 year_to_filter = st.selectbox(
     'Select Year:',
-    ["2019", "2020"]
+    ["2020", "2019"]
 )
 
 # make a dropdown menu to select industry
@@ -302,72 +302,73 @@ color_scale = [
     'rgb(128,0,0)'  # Low Metric1, High Metric2
 ]
 
-
-# create choropleth map
-fig = px.choropleth_mapbox(
-    df_final,
-    geojson=counties,
-    locations='fips',
-    color='bivariate',
-    color_discrete_map=ChoroColorDict["Employment"],
-    center = {"lat": 38.7214, "lon": -80.6530}, zoom = 5,
-    opacity=1.0,
-    category_orders={'bivariate': categoryOrderDict["Employment"]},
-    mapbox_style="carto-positron",
-    custom_data=['county',
-                 'employment',
-                 'employment_level',
-                 'drug_usage',
-                 'drug_usage_level']
-)
-
-
-# update the data displayed when hovering over a county
-fig.update_traces(hovertemplate='%{customdata[0]}<br><br>' + 
-                                'Opioid Dispensing Rate Per 100 People: %{customdata[3]} (%{customdata[4]})<br>' +
-                                'Employment per 1000 Jobs: %{customdata[1]} (%{customdata[2]})<br>')
-
-fig.update_layout(
-    hoverlabel=dict(
-        align="left"
+# Display loading bar
+with st.spinner("Loading..."):
+    # create choropleth map
+    fig = px.choropleth_mapbox(
+        df_final,
+        geojson=counties,
+        locations='fips',
+        color='bivariate',
+        color_discrete_map=ChoroColorDict["Employment"],
+        center = {"lat": 38.7214, "lon": -80.6530}, zoom = 5,
+        opacity=1.0,
+        category_orders={'bivariate': categoryOrderDict["Employment"]},
+        mapbox_style="carto-positron",
+        custom_data=['county',
+                    'employment',
+                    'employment_level',
+                    'drug_usage',
+                    'drug_usage_level']
     )
-)
 
-# create the legend
-legend = go.Heatmap(
-    z=[[0.0, 0.125, 0.25], [0.375, 0.5, 0.625], [0.75, 0.875, 1.0]],
-    x=["low", "medium", "high"],
-    y=["low", "medium", "high"],
-    showscale=False,
-    colorscale=LegendColorDict["Employment"],
-)
 
-# create a layout with a color axis for the legend
-layout = go.Layout(
-    title="Legend",
-    height=300,
-    width=270,
-    xaxis=dict(title="Employment"),
-    yaxis=dict(title="Opioid Dispensing Rate"),
-    hovermode=False,
-    coloraxis=dict(
-        cmin=1,  # Set the minimum value
-        cmax=9,  # Set the maximum value
-        colorbar=dict(title="Legend Title")
+    # update the data displayed when hovering over a county
+    fig.update_traces(hovertemplate='%{customdata[0]}<br><br>' + 
+                                    'Opioid Dispensing Rate Per 100 People: %{customdata[3]} (%{customdata[4]})<br>' +
+                                    'Employment per 1000 Jobs: %{customdata[1]} (%{customdata[2]})<br>')
+
+    fig.update_layout(
+        hoverlabel=dict(
+            align="left"
+        )
     )
-)
-legend = go.Figure(data=[legend], layout=layout)
-legend.update_traces(showlegend=False)
-legend.update_xaxes(fixedrange=True)
-legend.update_yaxes(fixedrange=True)
-legend.update_layout(title_text='Legend', title_x=0.5)
 
-# have legend next to figure
-col1, col2 = st.columns([3, 4])
-with col1:
-    st.plotly_chart(legend, theme="streamlit")
-with col2:
-    st.plotly_chart(fig, theme="streamlit")
+    # create the legend
+    legend = go.Heatmap(
+        z=[[0.0, 0.125, 0.25], [0.375, 0.5, 0.625], [0.75, 0.875, 1.0]],
+        x=["low", "medium", "high"],
+        y=["low", "medium", "high"],
+        showscale=False,
+        colorscale=LegendColorDict["Employment"],
+    )
+
+    # create a layout with a color axis for the legend
+    layout = go.Layout(
+        title="Legend",
+        height=300,
+        width=270,
+        xaxis=dict(title="Employment"),
+        yaxis=dict(title="Opioid Dispensing Rate"),
+        hovermode=False,
+        coloraxis=dict(
+            cmin=1,  # Set the minimum value
+            cmax=9,  # Set the maximum value
+            colorbar=dict(title="Legend Title")
+        )
+    )
+    legend = go.Figure(data=[legend], layout=layout)
+    legend.update_traces(showlegend=False)
+    legend.update_xaxes(fixedrange=True)
+    legend.update_yaxes(fixedrange=True)
+    legend.update_layout(title_text='Legend', title_x=0.5)
+
+    # have legend next to figure
+    col1, col2 = st.columns([3, 4])
+    with col1:
+        st.plotly_chart(legend, theme="streamlit")
+    with col2:
+        st.plotly_chart(fig, theme="streamlit")
 
 # add footer info
 footer="Sources: Centers for Disease Control and Prevention (CDC), US Bureau of Labor Statistics, The Washington Post"
