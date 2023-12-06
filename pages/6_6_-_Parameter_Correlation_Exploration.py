@@ -31,9 +31,9 @@ fileDict = {
     'Life Expectancy':      "data/WV Drug Epidemic Dataset.xlsx - Life Expectancy.csv",
     'Population':           "data/WV Drug Epidemic Dataset.xlsx - Population.csv",
     'Unemployment Rates (Percent)':   "data/WV Drug Epidemic Dataset.xlsx - Unemployment Rates (Percent).csv",
-    'Opioid Dispensing Rate (Per 100)' : 'data\WV Drug Epidemic Dataset.xlsx - Opioid Dispensing Rate per 100.csv',
-    'Physician Ratio' : 'data\WV Drug Epidemic Dataset.xlsx - Physicians Ratio (people_1 primary care physican)_numeric.csv',
-    'Manual Labor (Employment per 1,000 Jobs)' : 'data\WV Drug Epidemic Dataset.xlsx - Employment per 1000 jobs - (Overall).csv'
+    'Opioid Dispensing Rate (Per 100)' : 'data/WV Drug Epidemic Dataset.xlsx - Opioid Dispensing Rate per 100.csv',
+    'Physician Ratio' : 'data/WV Drug Epidemic Dataset.xlsx - Physicians Ratio (people_1 primary care physican)_numeric.csv',
+    'Manual Labor (Employment per 1,000 Jobs)' : 'data/WV Drug Epidemic Dataset.xlsx - Employment per 1000 jobs - (Overall).csv'
 }
 
 # Visualization Explaination
