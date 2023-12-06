@@ -255,7 +255,7 @@ with st.spinner("Loading..."):
     layout = go.Layout(
         title="Legend",
         height=300,
-        width=270,
+        width=280,
         xaxis=dict(title=metric),
         yaxis=dict(title="Opioid Dispensing Rate"),
         hovermode=False,
