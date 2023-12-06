@@ -54,12 +54,12 @@ fileDict = {
     'Life Expectancy':      "data/WV Drug Epidemic Dataset.xlsx - Life Expectancy.csv",
     'Population':           "data/WV Drug Epidemic Dataset.xlsx - Population.csv",
     'Unemployment Rates (Percent)':   "data/WV Drug Epidemic Dataset.xlsx - Unemployment Rates (Percent).csv",
-    'Opioid Dispensing Rate (Per 100)' : 'data\WV Drug Epidemic Dataset.xlsx - Opioid Dispensing Rate per 100.csv',
-    'Physician Ratio' : 'data\WV Drug Epidemic Dataset.xlsx - Physicians Ratio (people_1 primary care physican)_numeric.csv',
-    'Fish, Farms, and Forest Labor (Employment per 1,000 Jobs)':     'data\WV Drug Epidemic Dataset.xlsx - Employment per 1000 jobs - Farm&Fish&Forest.csv',
-    'Install, Maintenance, and Repair (Employment per 1,000 Jobs)':     'data\WV Drug Epidemic Dataset.xlsx - Employment per 1000 jobs - Install&Mainten&Repair.csv',
-    'Production Labor (Employment per 1,000 Jobs)':     'data\WV Drug Epidemic Dataset.xlsx - Employment per 1000 jobs - Production.csv',
-    'Construction and Extraction Labor (Employment per 1,000 Jobs)':     'data\WV Drug Epidemic Dataset.xlsx - Employment per 1000 jobs- Construction&Extraction .csv'
+    'Opioid Dispensing Rate (Per 100)' : 'data/WV Drug Epidemic Dataset.xlsx - Opioid Dispensing Rate per 100.csv',
+    'Physician Ratio' : 'data/WV Drug Epidemic Dataset.xlsx - Physicians Ratio (people_1 primary care physican)_numeric.csv',
+    'Fish, Farms, and Forest Labor (Employment per 1,000 Jobs)':     'data/WV Drug Epidemic Dataset.xlsx - Employment per 1000 jobs - Farm&Fish&Forest.csv',
+    'Install, Maintenance, and Repair (Employment per 1,000 Jobs)':     'data/WV Drug Epidemic Dataset.xlsx - Employment per 1000 jobs - Install&Mainten&Repair.csv',
+    'Production Labor (Employment per 1,000 Jobs)':     'data/WV Drug Epidemic Dataset.xlsx - Employment per 1000 jobs - Production.csv',
+    'Construction and Extraction Labor (Employment per 1,000 Jobs)':     'data/WV Drug Epidemic Dataset.xlsx - Employment per 1000 jobs- Construction&Extraction .csv'
 }
 
 # select box for metric
